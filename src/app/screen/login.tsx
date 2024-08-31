@@ -31,7 +31,7 @@ export default function FormLogin() {
                     {/* Login Form Wrapper */}
                     <Animated.View style={[styles.formWrapper, { opacity: fadeAnim }]}>
                         <TouchableOpacity onPress={changeForm} style={styles.switcher}>
-                            <Text style={styles.switcherText}>Login</Text>
+                            <Text style={styles.switcherText}>Sign Up</Text>
                             <View style={styles.underline}></View>
                         </TouchableOpacity>
                         <Animated.View style={styles.form}>
@@ -52,7 +52,7 @@ export default function FormLogin() {
                     {/* Signup Form Wrapper */}
                     <Animated.View style={[styles.formWrapper, { opacity: fadeAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }) }]}>
                         <TouchableOpacity onPress={changeForm} style={styles.switcher}>
-                            <Text style={styles.switcherText}>Sign Up</Text>
+                            <Text style={styles.switcherText}>Login</Text>
                             <View style={styles.underline}></View>
                         </TouchableOpacity>
                         <Animated.View style={styles.form}>
@@ -68,7 +68,7 @@ export default function FormLogin() {
                                 <Text style={styles.label}>Password</Text>
                                 <TextInput style={styles.input} placeholder="Enter password" secureTextEntry />
                             </View>
-                            <TouchableOpacity style={styles.btnSignup}>
+                            <TouchableOpacity style={styles.btnLogin}>
                                 <Text style={styles.btnText}>Continue</Text>
                             </TouchableOpacity>
                         </Animated.View>
@@ -94,10 +94,12 @@ const styles = StyleSheet.create({
     forms: {
         flexDirection: 'column',
         alignItems: 'center',
+        top: 0
     },
     formWrapper: {
-        width: '100%',
+        width: '75%',
         alignItems: 'center',
+        position: 'absolute',
     },
     switcher: {
         marginVertical: 10,
@@ -118,7 +120,6 @@ const styles = StyleSheet.create({
         width: '100%',
         padding: 20,
         borderRadius: 5,
-        backgroundColor: '#fff',
         alignItems: 'center',
     },
     inputBlock: {
@@ -145,15 +146,6 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 20,
         borderRadius: 5,
-        marginTop: 20,
-    },
-    btnSignup: {
-        backgroundColor: '#fff',
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 5,
-        borderColor: '#F44646',
-        borderWidth: 1,
         marginTop: 20,
     },
     btnText: {

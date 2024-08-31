@@ -19,7 +19,7 @@ api.interceptors.response.use((response) => response, async (error) => {
 
     if (error.response.status === 403 && !originalRequest._retry) {
         originalRequest._retry = true;
-        router.navigate('/login');
+        router.navigate('/screen/login');
     }
 
     return Promise.reject(error);

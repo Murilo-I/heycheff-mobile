@@ -15,8 +15,8 @@ export default function Feed() {
 
     const pageSize = 4;
 
-    function loadReceipt() {
-        receiptServer.loadFeed(pageNum, pageSize)
+    async function loadReceipt() {
+        await receiptServer.loadFeed(pageNum, pageSize)
             .then(feedResponse => {
                 if (totalReceipts === 0)
                     setTotalReceipts(feedResponse.data.count);
@@ -26,7 +26,7 @@ export default function Feed() {
             });
     }
 
-    function loadMore({
+    async function loadMore({
         layoutMeasurement,
         contentOffset,
         contentSize }: NativeScrollEvent) {
@@ -38,12 +38,15 @@ export default function Feed() {
         if (hitTheBottom && hasMore) {
             setPageNum(pageNum + 1);
             setLoading(true);
-            loadReceipt();
+            await loadReceipt();
             setLoading(false);
         }
     }
 
-    useEffect(() => loadReceipt, []);
+    useEffect(() => {
+        const fetchReceipt = async () => await loadReceipt();
+        fetchReceipt();
+    }, []);
 
     return (
         <View className="h-screen flex-1 flex-col px-5">
