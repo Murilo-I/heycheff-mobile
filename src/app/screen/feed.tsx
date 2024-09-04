@@ -23,7 +23,7 @@ export default function Feed() {
 
                 setReceipts([...receipts, ...feedResponse.data.items]);
                 setHasMore(receipts.length < totalReceipts);
-            });
+            }).catch(error => console.log(error));
     }
 
     async function loadMore({
@@ -53,8 +53,8 @@ export default function Feed() {
             <FlatList
                 data={receipts}
                 renderItem={({ item }) => <ReceiptCard receipt={item} />}
-                onScroll={({ nativeEvent }) => {
-                    if (!loading) loadMore(nativeEvent);
+                onScroll={({ nativeEvent }) => async () => {
+                    if (!loading) await loadMore(nativeEvent);
                 }}
                 scrollEventThrottle={250}
                 keyExtractor={receipt => receipt.id.toString()}

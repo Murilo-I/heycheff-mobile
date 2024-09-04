@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { router } from "expo-router";
 
 import { API_URL } from '@/constants/endpoints';
@@ -14,11 +14,10 @@ api.interceptors.request.use(config => {
     return config;
 });
 
-api.interceptors.response.use((response) => response, async (error) => {
+api.interceptors.response.use((response) => response, async (error: AxiosError) => {
     const originalRequest = error.config;
 
-    if (error.response.status === 403 && !originalRequest._retry) {
-        originalRequest._retry = true;
+    if (error.response?.status === 403) {
         router.navigate('/screen/login');
     }
 
