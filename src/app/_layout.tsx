@@ -16,7 +16,7 @@ export default function Layout() {
     }
 
     return (
-        <View className='flex-1 bg-yellowOrange-10'>
+        <View>
             <StatusBar
                 barStyle="light-content"
                 backgroundColor="transparent"

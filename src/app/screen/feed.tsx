@@ -49,7 +49,7 @@ export default function Feed() {
     }, []);
 
     return (
-        <View className="h-screen flex-1 flex-col px-5">
+        <View>
             <FlatList
                 data={receipts}
                 renderItem={({ item }) => <ReceiptCard receipt={item} />}
@@ -59,10 +59,10 @@ export default function Feed() {
                 scrollEventThrottle={250}
                 keyExtractor={receipt => receipt.id.toString()}
             />
-            {loading ? <ActivityIndicator className="text-yellowOrange-100 my-4" />
+            {loading ? <ActivityIndicator />
                 : ""}
             {!hasMore ?
-                <Text className="font-regular text-sm text-gray-400 my-4">
+                <Text>
                     Sem mais receitas
                 </Text> : ""}
         </View>
@@ -75,15 +75,15 @@ const ReceiptCard = ({ receipt }: { receipt: ReceiptFeed }) => {
             <Card.Img src={receipt.thumb} />
             <Card.Content>
                 <Card.Title>{receipt.titulo}</Card.Title>
-                <View className="flex-row content-between">
-                    <View className="flex-initial text-gray-500">
+                <View>
+                    <View>
                         <Timer size={20} />
-                        <Text className="font-regular">
+                        <Text>
                             {receipt.estimatedTime}
                         </Text>
                     </View>
-                    {receipt.tags.map(category =>
-                        <Tag text={category.tag} />)}
+                    {receipt.tags.map((category) =>
+                        <Tag key={category.id} text={category.tag} />)}
                 </View>
             </Card.Content>
         </Card>

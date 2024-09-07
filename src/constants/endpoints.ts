@@ -1,5 +1,5 @@
-const URL_DEV = "http://192.168.15.6:6015/heycheff";
-const URL_MEDIA_DEV = "http://192.168.15.6:6015";
+const URL_DEV = "http://172.20.10.3:6015/heycheff";
+const URL_MEDIA_DEV = "http://172.20.10.3:6015";
 
 const URL_PROD = "http://179.124.193.12:6015/heycheff";
 const URL_MEDIA_PROD = "http://179.124.193.12:6015";
