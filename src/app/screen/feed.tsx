@@ -23,6 +23,8 @@ export default function Feed() {
 
                 setReceipts([...receipts, ...feedResponse.data.items]);
                 setHasMore(receipts.length < totalReceipts);
+
+                console.log(feedResponse)
             }).catch(error => console.log(error));
     }
 
@@ -49,7 +51,7 @@ export default function Feed() {
     }, []);
 
     return (
-        <View>
+        <View style={{flex: 1}}>
             <FlatList
                 data={receipts}
                 renderItem={({ item }) => <ReceiptCard receipt={item} />}

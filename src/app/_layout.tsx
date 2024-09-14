@@ -1,6 +1,7 @@
 import { useFonts } from 'expo-font';
 import { Slot } from 'expo-router';
 import { StatusBar, View } from 'react-native';
+import { PaperProvider } from 'react-native-paper';
 
 import { Loading } from '@/components/loading';
 import '@/styles/global.css';
@@ -16,13 +17,16 @@ export default function Layout() {
     }
 
     return (
+
         <View>
-            <StatusBar
-                barStyle="light-content"
-                backgroundColor="transparent"
-                translucent
-            />
-            <Slot />
+            <PaperProvider>
+                <StatusBar
+                    barStyle="light-content"
+                    backgroundColor="transparent"
+                    translucent
+                />
+                <Slot />
+            </PaperProvider>
         </View>
     );
 }

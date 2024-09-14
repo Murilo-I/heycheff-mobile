@@ -25,7 +25,7 @@ export default function FormLogin() {
     };
 
     return (
-        <View style={styles.body} className="bg-gradient-to-l from-yellowOrange-100 to-rose-50">
+        <View style={styles.body}>
             <View style={styles.formsSection}>
                 <View style={styles.forms}>
                     {/* Login Form Wrapper */}

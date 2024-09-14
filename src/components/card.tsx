@@ -5,7 +5,7 @@ import { mediaServer } from "@/server/media";
 
 function Card({ children }: ViewProps) {
     return (
-        <View className="w-full flex-1 justify-center bg-transparent border-solid rounded-xl">
+        <View >
             {children}
         </View>
     );
@@ -16,25 +16,27 @@ function Img({ src }: { src: string }) {
 
     useEffect(() => {
         const fetchImageUrl = async () => {
-            setImageUrl(await mediaServer.displayMedia(src));
+
+            const media = await mediaServer.displayMedia(src)
+            console.log({ src, media })
+
+            setImageUrl(media);
         }
         fetchImageUrl();
     }, []);
 
-    return <Image source={{ uri: imageUrl }}
-        onLoad={() => URL.revokeObjectURL(imageUrl)}
-        className="w-full rounded-t-xl border-b border-yellowOrange-100" />
+    return <Image source={{ uri: imageUrl }} style={{height: 300}} />
 }
 
 function Title({ children }: TextProps) {
-    return <Text className="font-regular font-bold text-xl text-center my-3">
+    return <Text>
         {children}
     </Text>
 }
 
 function Content({ children }: ViewProps) {
     return (
-        <View className="flex-row items-center justify-center p-4">
+        <View>
             {children}
         </View>
     );

@@ -9,11 +9,14 @@ function fetchMedia(url: string) {
 
 async function getBlobMedia(url: string) {
     const resp = await fetchMedia(url);
-    return await resp.blob();
+    const blob = await resp.blob();
+    return blob;
 }
 
 async function displayMedia(url: string) {
-    return URL.createObjectURL(await getBlobMedia(url));
+    const blob = await getBlobMedia(url);
+    const urlBlob = URL.createObjectURL(blob)
+    return urlBlob;
 }
 
 async function displayMediaType(url: string) {
