@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Animated, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Animated, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 export default function FormLogin() {
     const [isActive, setIsActive] = useState(true);
@@ -26,55 +26,51 @@ export default function FormLogin() {
 
     return (
         <View style={styles.body}>
-            <View style={styles.formsSection}>
-                <View style={styles.forms}>
-                    {/* Login Form Wrapper */}
-                    <Animated.View style={[styles.formWrapper, { opacity: fadeAnim }]}>
-                        <TouchableOpacity onPress={changeForm} style={styles.switcher}>
-                            <Text style={styles.switcherText}>Sign Up</Text>
-                            <View style={styles.underline}></View>
-                        </TouchableOpacity>
-                        <Animated.View style={styles.form}>
-                            <View style={styles.inputBlock}>
-                                <Text style={styles.label}>Username</Text>
-                                <TextInput style={styles.input} placeholder="Enter username" />
-                            </View>
-                            <View style={styles.inputBlock}>
-                                <Text style={styles.label}>Password</Text>
-                                <TextInput style={styles.input} placeholder="Enter password" secureTextEntry />
-                            </View>
-                            <TouchableOpacity style={styles.btnLogin}>
-                                <Text style={styles.btnText}>Login</Text>
-                            </TouchableOpacity>
-                        </Animated.View>
-                    </Animated.View>
+            {/* Login Form Wrapper */}
+            <Animated.View style={[styles.formWrapper, { opacity: fadeAnim }]}>
+                <Pressable onPress={changeForm} style={styles.switcher}>
+                    <Text style={styles.switcherText}>Sign Up</Text>
+                    <View style={styles.underline}></View>
+                </Pressable>
+                <Animated.View style={styles.form}>
+                    <View style={styles.inputBlock}>
+                        <Text style={styles.label}>Username</Text>
+                        <TextInput style={styles.input} placeholder="Enter username" />
+                    </View>
+                    <View style={styles.inputBlock}>
+                        <Text style={styles.label}>Password</Text>
+                        <TextInput style={styles.input} placeholder="Enter password" secureTextEntry />
+                    </View>
+                    <Pressable style={styles.btnLogin}>
+                        <Text style={styles.btnText}>Login</Text>
+                    </Pressable>
+                </Animated.View>
+            </Animated.View>
 
-                    {/* Signup Form Wrapper */}
-                    <Animated.View style={[styles.formWrapper, { opacity: fadeAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }) }]}>
-                        <TouchableOpacity onPress={changeForm} style={styles.switcher}>
-                            <Text style={styles.switcherText}>Login</Text>
-                            <View style={styles.underline}></View>
-                        </TouchableOpacity>
-                        <Animated.View style={styles.form}>
-                            <View style={styles.inputBlock}>
-                                <Text style={styles.label}>E-mail</Text>
-                                <TextInput style={styles.input} placeholder="Enter e-mail" keyboardType="email-address" />
-                            </View>
-                            <View style={styles.inputBlock}>
-                                <Text style={styles.label}>Username</Text>
-                                <TextInput style={styles.input} placeholder="Enter username" />
-                            </View>
-                            <View style={styles.inputBlock}>
-                                <Text style={styles.label}>Password</Text>
-                                <TextInput style={styles.input} placeholder="Enter password" secureTextEntry />
-                            </View>
-                            <TouchableOpacity style={styles.btnLogin}>
-                                <Text style={styles.btnText}>Continue</Text>
-                            </TouchableOpacity>
-                        </Animated.View>
-                    </Animated.View>
-                </View>
-            </View>
+            {/* Signup Form Wrapper */}
+            <Animated.View style={[styles.formWrapper, { opacity: fadeAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }) }]}>
+                <Pressable onPress={changeForm} style={styles.switcher}>
+                    <Text style={styles.switcherText}>Login</Text>
+                    <View style={styles.underline}></View>
+                </Pressable>
+                <Animated.View style={styles.form}>
+                    <View style={styles.inputBlock}>
+                        <Text style={styles.label}>E-mail</Text>
+                        <TextInput style={styles.input} placeholder="Enter e-mail" keyboardType="email-address" />
+                    </View>
+                    <View style={styles.inputBlock}>
+                        <Text style={styles.label}>Username</Text>
+                        <TextInput style={styles.input} placeholder="Enter username" />
+                    </View>
+                    <View style={styles.inputBlock}>
+                        <Text style={styles.label}>Password</Text>
+                        <TextInput style={styles.input} placeholder="Enter password" secureTextEntry />
+                    </View>
+                    <Pressable style={styles.btnLogin}>
+                        <Text style={styles.btnText}>Continue</Text>
+                    </Pressable>
+                </Animated.View>
+            </Animated.View>
         </View>
     );
 }

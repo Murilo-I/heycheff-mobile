@@ -1,7 +1,7 @@
 import axios, { AxiosError } from 'axios';
 import { router } from "expo-router";
 
-import { API_URL } from '@/constants/endpoints';
+import { API_URL } from '@/util/endpoints';
 import { jwtStorage } from '@/storage/jwt';
 
 const api = axios.create({

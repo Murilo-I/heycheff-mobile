@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { API_URL } from '@/constants/endpoints';
+import { API_URL } from '@/util/endpoints';
 import { jwtStorage } from '@/storage/jwt';
 
 type TokenDetails = {

@@ -1,8 +1,9 @@
 import { Timer } from "lucide-react-native";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, FlatList, NativeScrollEvent, Text, View } from "react-native";
+import { FlatList, NativeScrollEvent, Text, View } from "react-native";
 
 import { Card } from "@/components/card";
+import { Loading } from "@/components/loading";
 import Tag from "@/components/tag";
 import { ReceiptFeed, receiptServer } from "@/server/receipt";
 
@@ -15,58 +16,54 @@ export default function Feed() {
 
     const pageSize = 4;
 
-    async function loadReceipt() {
-        await receiptServer.loadFeed(pageNum, pageSize)
+    function loadReceipt() {
+        receiptServer.loadFeed(pageNum, pageSize)
             .then(feedResponse => {
                 if (totalReceipts === 0)
                     setTotalReceipts(feedResponse.data.count);
+                else
+                    setHasMore(receipts.length < totalReceipts);
 
                 setReceipts([...receipts, ...feedResponse.data.items]);
-                setHasMore(receipts.length < totalReceipts);
-
-                console.log(feedResponse)
+                setPageNum(pageNum + 1);
             }).catch(error => console.log(error));
     }
 
-    async function loadMore({
+    function loadMore({
         layoutMeasurement,
         contentOffset,
         contentSize }: NativeScrollEvent) {
 
-        const paddingToBottom = 50;
+        const paddingToBottom = 20;
         const hitTheBottom = layoutMeasurement.height + contentOffset.y
             >= contentSize.height - paddingToBottom;
 
         if (hitTheBottom && hasMore) {
-            setPageNum(pageNum + 1);
             setLoading(true);
-            await loadReceipt();
+            loadReceipt();
             setLoading(false);
         }
     }
 
-    useEffect(() => {
-        const fetchReceipt = async () => await loadReceipt();
-        fetchReceipt();
-    }, []);
+    useEffect(() => loadReceipt(), []);
 
     return (
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
             <FlatList
                 data={receipts}
                 renderItem={({ item }) => <ReceiptCard receipt={item} />}
-                onScroll={({ nativeEvent }) => async () => {
-                    if (!loading) await loadMore(nativeEvent);
+                onScroll={({ nativeEvent }) => {
+                    if (!loading) loadMore(nativeEvent);
                 }}
-                scrollEventThrottle={250}
+                scrollEventThrottle={100}
                 keyExtractor={receipt => receipt.id.toString()}
             />
-            {loading ? <ActivityIndicator />
-                : ""}
+            {loading ? <Loading />
+                : <></>}
             {!hasMore ?
                 <Text>
                     Sem mais receitas
-                </Text> : ""}
+                </Text> : <></>}
         </View>
     );
 }

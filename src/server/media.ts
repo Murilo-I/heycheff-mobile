@@ -1,4 +1,4 @@
-import { API_URL_MEDIA } from "@/constants/endpoints";
+import { API_URL_MEDIA } from "@/util/endpoints";
 import { jwtStorage } from "@/storage/jwt";
 
 function fetchMedia(url: string) {

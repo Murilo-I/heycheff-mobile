@@ -1,6 +1,8 @@
-import clsx from "clsx";
 import { createContext, useContext } from "react";
-import { ActivityIndicator, Text, TextProps, TouchableOpacity, TouchableOpacityProps, View } from "react-native";
+import { Text, TextProps, TouchableOpacity, TouchableOpacityProps, View } from "react-native";
+
+import { styles } from "@/styles/global";
+import { Loading } from "./loading";
 
 type Variants = "primary" | "secondary";
 
@@ -13,27 +15,25 @@ const ThemeContext = createContext<{ variant?: Variants }>({});
 
 function Button({
     variant = "primary",
-    children,
     isLoading,
-    className,
+    children,
     ...rest
 }: ButtonProps) {
     return (
-        <View className={className}>
+        <View>
             <TouchableOpacity
                 activeOpacity={.7}
                 disabled={isLoading}
                 {...rest}
             >
-                <View className={clsx(
-                    "w-full h-10 flex-row items-center justify-center rounded-xl gap-2 px-2",
-                    {
-                        "bg-rose-200": variant === "primary",
-                        "bg-yellowOrange-10 border border-l-rose-200": variant === "secondary"
-                    }
-                )}>
+                <View style={[
+                    styles.flexCenter, styles.rounded,
+                    variant === 'primary'
+                        ? styles.btnPrimary
+                        : styles.btnSecondary
+                ]}>
                     <ThemeContext.Provider value={{ variant }}>
-                        {isLoading ? <ActivityIndicator className="text-yellowOrange-100" /> : children}
+                        {isLoading ? <Loading /> : children}
                     </ThemeContext.Provider>
                 </View>
             </TouchableOpacity>
@@ -43,16 +43,11 @@ function Button({
 
 function Title({ children, ...rest }: TextProps) {
     const { variant } = useContext(ThemeContext);
-    return <Text
-        className={clsx(
-            "text-base font-regular",
-            {
-                "text-yellowOrange-10": variant === "primary",
-                "text-rose-200": variant === "secondary"
-            }
-        )}
-        {...rest}
-    >
+    return <Text style={[
+        styles.fontRegular, variant === 'primary'
+            ? styles.textYellowWhite
+            : styles.textRose
+    ]} {...rest}>
         {children}
     </Text>
 }
@@ -60,4 +55,3 @@ function Title({ children, ...rest }: TextProps) {
 Button.Title = Title;
 
 export { Button };
-

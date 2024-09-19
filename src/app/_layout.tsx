@@ -4,7 +4,6 @@ import { StatusBar, View } from 'react-native';
 import { PaperProvider } from 'react-native-paper';
 
 import { Loading } from '@/components/loading';
-import '@/styles/global.css';
 
 export default function Layout() {
     const [fontsLoaded] = useFonts({
@@ -17,8 +16,7 @@ export default function Layout() {
     }
 
     return (
-
-        <View>
+        <View style={{ flex: 1 }}>
             <PaperProvider>
                 <StatusBar
                     barStyle="light-content"

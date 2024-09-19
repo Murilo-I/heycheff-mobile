@@ -16,10 +16,7 @@ function Img({ src }: { src: string }) {
 
     useEffect(() => {
         const fetchImageUrl = async () => {
-
-            const media = await mediaServer.displayMedia(src)
-            console.log({ src, media })
-
+            const media = await mediaServer.displayMedia(src);
             setImageUrl(media);
         }
         fetchImageUrl();
