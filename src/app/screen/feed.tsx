@@ -6,6 +6,7 @@ import { Card } from "@/components/card";
 import { Loading } from "@/components/loading";
 import Tag from "@/components/tag";
 import { ReceiptFeed, receiptServer } from "@/server/receipt";
+import { styles } from "@/styles/global";
 
 export default function Feed() {
     const [receipts, setReceipts] = useState<ReceiptFeed[]>([]);
@@ -74,10 +75,10 @@ const ReceiptCard = ({ receipt }: { receipt: ReceiptFeed }) => {
             <Card.Img src={receipt.thumb} />
             <Card.Content>
                 <Card.Title>{receipt.titulo}</Card.Title>
-                <View>
-                    <View>
+                <View style={[styles.flexRow, styles.contentBetween]}>
+                    <View style={[styles.flexInitial, styles.flexRow]}>
                         <Timer size={20} />
-                        <Text>
+                        <Text style={[styles.fontRegular, styles.textGray]}>
                             {receipt.estimatedTime}
                         </Text>
                     </View>

@@ -1,14 +1,15 @@
-import { createContext, useContext } from "react";
-import { Text, TextProps, TouchableOpacity, TouchableOpacityProps, View } from "react-native";
+import React, { createContext, useContext } from "react";
+import { Pressable, PressableProps, Text, TextProps, TouchableOpacity, TouchableOpacityProps, View } from "react-native";
 
 import { styles } from "@/styles/global";
 import { Loading } from "./loading";
 
 type Variants = "primary" | "secondary";
 
-type ButtonProps = TouchableOpacityProps & {
+type ButtonProps = PressableProps & {
     variant?: Variants
     isLoading?: boolean
+    children: React.JSX.Element
 }
 
 const ThemeContext = createContext<{ variant?: Variants }>({});
@@ -21,8 +22,7 @@ function Button({
 }: ButtonProps) {
     return (
         <View>
-            <TouchableOpacity
-                activeOpacity={.7}
+            <Pressable
                 disabled={isLoading}
                 {...rest}
             >
@@ -36,7 +36,7 @@ function Button({
                         {isLoading ? <Loading /> : children}
                     </ThemeContext.Provider>
                 </View>
-            </TouchableOpacity>
+            </Pressable>
         </View>
     );
 }

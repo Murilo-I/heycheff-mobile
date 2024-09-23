@@ -8,13 +8,13 @@ const netInfo = async () => {
         });
 }
 
-const IP = '9.86.218.125';
+const IP_DEV = '192.168.15.7';
+const URL_DEV = `http://${IP_DEV}:6015/heycheff`;
+const URL_MEDIA_DEV = `http://${IP_DEV}:6015`;
 
-const URL_DEV = `http://${IP}:6015/heycheff`;
-const URL_MEDIA_DEV = `http://${IP}:6015`;
-
-const URL_PROD = "http://179.124.193.12:6015/heycheff";
-const URL_MEDIA_PROD = "http://179.124.193.12:6015";
+const IP_PROD = '179.124.193.12';
+const URL_PROD = `http://${IP_PROD}:6015/heycheff`;
+const URL_MEDIA_PROD = `http://${IP_PROD}:6015`;
 
 const isDev = process.env.NODE_ENV === 'development';
 

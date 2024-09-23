@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import { Image, Text, TextProps, View, ViewProps } from "react-native";
 
 import { mediaServer } from "@/server/media";
+import { styles } from "@/styles/global";
 
 function Card({ children }: ViewProps) {
     return (
-        <View >
+        <View style={styles.card}>
             {children}
         </View>
     );
@@ -22,18 +23,18 @@ function Img({ src }: { src: string }) {
         fetchImageUrl();
     }, []);
 
-    return <Image source={{ uri: imageUrl }} style={{height: 300}} />
+    return <Image source={{ uri: imageUrl }} style={styles.cardImage} />
 }
 
 function Title({ children }: TextProps) {
-    return <Text>
+    return <Text style={styles.cardTitle}>
         {children}
     </Text>
 }
 
 function Content({ children }: ViewProps) {
     return (
-        <View>
+        <View style={styles.cardContent}>
             {children}
         </View>
     );

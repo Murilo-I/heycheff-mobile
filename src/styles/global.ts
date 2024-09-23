@@ -12,12 +12,39 @@ export const styles = StyleSheet.create({
         gap: 16
     },
 
+    flexInitial: {
+        flex: 1,
+        justifyContent: 'flex-start'
+    },
+
+    flexRow: {
+        flexDirection: 'row'
+    },
+
     flexColumn: {
         flexDirection: 'column'
     },
 
     flexWrap: {
         flexWrap: 'wrap'
+    },
+
+    contentBetween: {
+        alignContent: 'space-between'
+    },
+
+    card: {
+        flex: 1,
+    },
+
+    cardImage: {
+        height: 300
+    },
+
+    cardTitle: {
+    },
+
+    cardContent: {
     },
 
     bgYellowOrange: {
@@ -34,6 +61,10 @@ export const styles = StyleSheet.create({
 
     textRose: {
         color: colors.rose[200],
+    },
+
+    textGray: {
+        color: '#AAA'
     },
 
     btnPrimary: {
@@ -95,5 +126,9 @@ export const styles = StyleSheet.create({
 
     w200: {
         width: 200
+    },
+
+    wFull: {
+        width: '100%'
     }
 });
