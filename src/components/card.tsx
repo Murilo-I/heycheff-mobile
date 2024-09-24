@@ -14,16 +14,18 @@ function Card({ children }: ViewProps) {
 
 function Img({ src }: { src: string }) {
     const [imageUrl, setImageUrl] = useState<string>("");
+    const [imageHeight, setImageHeight] = useState<number>(300);
 
     useEffect(() => {
         const fetchImageUrl = async () => {
-            const media = await mediaServer.displayMedia(src);
-            setImageUrl(media);
+            const media = await mediaServer.displayMediaSize(src);
+            setImageUrl(media.url);
         }
         fetchImageUrl();
     }, []);
 
-    return <Image source={{ uri: imageUrl }} style={styles.cardImage} />
+    return <Image source={{ uri: imageUrl }}
+        style={[styles.cardImage, { height: imageHeight }]} />
 }
 
 function Title({ children }: TextProps) {

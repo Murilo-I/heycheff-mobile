@@ -8,7 +8,7 @@ const netInfo = async () => {
         });
 }
 
-const IP_DEV = '192.168.15.7';
+const IP_DEV = '192.168.15.3';
 const URL_DEV = `http://${IP_DEV}:6015/heycheff`;
 const URL_MEDIA_DEV = `http://${IP_DEV}:6015`;
 

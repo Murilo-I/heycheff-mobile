@@ -14,7 +14,9 @@ export const styles = StyleSheet.create({
 
     flexInitial: {
         flex: 1,
-        justifyContent: 'flex-start'
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        gap: 4
     },
 
     flexRow: {
@@ -35,16 +37,39 @@ export const styles = StyleSheet.create({
 
     card: {
         flex: 1,
+        margin: 8,
+        borderWidth: 2,
+        borderStyle: 'solid',
+        borderColor: colors.rose[200],
+        borderRadius: 8
     },
 
     cardImage: {
-        height: 300
+        borderTopRightRadius: 8,
+        borderTopLeftRadius: 8,
+        borderBottomWidth: 2,
+        borderBottomColor: '#AAA'
     },
 
     cardTitle: {
+        fontFamily: fontFamily.regular,
+        fontSize: 20,
+        textAlign: 'center',
+        margin: 8,
+        marginBottom: 16,
+        textDecorationLine: 'underline'
     },
 
     cardContent: {
+        padding: 8
+    },
+
+    tag: {
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+        marginLeft: 4,
+        backgroundColor: colors.yellowOrange[200],
+        borderRadius: 4
     },
 
     bgYellowOrange: {
@@ -65,6 +90,18 @@ export const styles = StyleSheet.create({
 
     textGray: {
         color: '#AAA'
+    },
+
+    textCenter: {
+        textAlign: 'center'
+    },
+
+    textSmall: {
+        fontSize: 12
+    },
+
+    textLarge: {
+        fontSize: 24
     },
 
     btnPrimary: {

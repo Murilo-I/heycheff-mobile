@@ -62,7 +62,7 @@ export default function Feed() {
             {loading ? <Loading />
                 : <></>}
             {!hasMore ?
-                <Text>
+                <Text style={[styles.textCenter, styles.m8, styles.fontRegular, styles.textSmall]}>
                     Sem mais receitas
                 </Text> : <></>}
         </View>
@@ -77,9 +77,12 @@ const ReceiptCard = ({ receipt }: { receipt: ReceiptFeed }) => {
                 <Card.Title>{receipt.titulo}</Card.Title>
                 <View style={[styles.flexRow, styles.contentBetween]}>
                     <View style={[styles.flexInitial, styles.flexRow]}>
-                        <Timer size={20} />
+                        <Timer size={20} color="#AAA" />
                         <Text style={[styles.fontRegular, styles.textGray]}>
                             {receipt.estimatedTime}
+                        </Text>
+                        <Text style={[styles.fontRegular, styles.textGray]}>
+                            min.
                         </Text>
                     </View>
                     {receipt.tags.map((category) =>
