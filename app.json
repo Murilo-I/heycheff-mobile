@@ -19,7 +19,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#FFD186"
-      }
+      },
+      "package": "br.com.heycheff"
     },
     "web": {
       "bundler": "metro",

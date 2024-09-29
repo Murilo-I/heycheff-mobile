@@ -31,8 +31,28 @@ export const styles = StyleSheet.create({
         flexWrap: 'wrap'
     },
 
+    gap8: {
+        gap: 8
+    },
+
+    justifyCenter: {
+        justifyContent: 'center'
+    },
+
+    justifyEnd: {
+        justifyContent: 'flex-end'
+    },
+
+    justifyAround: {
+        justifyContent: 'space-around'
+    },
+
     contentBetween: {
         alignContent: 'space-between'
+    },
+
+    absolute: {
+        position: 'absolute'
     },
 
     card: {
@@ -67,6 +87,7 @@ export const styles = StyleSheet.create({
     tag: {
         paddingHorizontal: 12,
         paddingVertical: 6,
+        marginTop: 4,
         marginLeft: 4,
         backgroundColor: colors.yellowOrange[200],
         borderRadius: 4
@@ -74,6 +95,18 @@ export const styles = StyleSheet.create({
 
     bgYellowOrange: {
         backgroundColor: colors.yellowOrange[100]
+    },
+
+    bgYellowWhite: {
+        backgroundColor: colors.yellowOrange[10]
+    },
+
+    bgLightYellow: {
+        backgroundColor: colors.yellowOrange[20]
+    },
+
+    bgRose: {
+        backgroundColor: colors.rose[200]
     },
 
     textYellowOrange: {
@@ -102,6 +135,14 @@ export const styles = StyleSheet.create({
 
     textLarge: {
         fontSize: 24
+    },
+
+    textXl: {
+        fontSize: 32
+    },
+
+    textBold: {
+        fontWeight: 'bold'
     },
 
     btnPrimary: {
@@ -141,6 +182,10 @@ export const styles = StyleSheet.create({
         marginTop: 8
     },
 
+    p12: {
+        padding: 12
+    },
+
     h50: {
         height: 50
     },
@@ -151,6 +196,10 @@ export const styles = StyleSheet.create({
 
     h200: {
         height: 200
+    },
+
+    hfull: {
+        height: '100%'
     },
 
     w100: {

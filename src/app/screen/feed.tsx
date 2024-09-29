@@ -49,7 +49,7 @@ export default function Feed() {
     useEffect(() => loadReceipt(), []);
 
     return (
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, marginTop: 48 }}>
             <FlatList
                 data={receipts}
                 renderItem={({ item }) => <ReceiptCard receipt={item} />}
@@ -76,7 +76,7 @@ const ReceiptCard = ({ receipt }: { receipt: ReceiptFeed }) => {
             <Card.Content>
                 <Card.Title>{receipt.titulo}</Card.Title>
                 <View style={[styles.flexRow, styles.contentBetween]}>
-                    <View style={[styles.flexInitial, styles.flexRow]}>
+                    <View style={[styles.flexInitial, styles.flexRow, { flex: .2 }]}>
                         <Timer size={20} color="#AAA" />
                         <Text style={[styles.fontRegular, styles.textGray]}>
                             {receipt.estimatedTime}
@@ -85,8 +85,10 @@ const ReceiptCard = ({ receipt }: { receipt: ReceiptFeed }) => {
                             min.
                         </Text>
                     </View>
-                    {receipt.tags.map((category) =>
-                        <Tag key={category.id} text={category.tag} />)}
+                    <View style={[styles.flexRow, styles.flexWrap, styles.justifyEnd, { flex: .8 }]}>
+                        {receipt.tags.map((category) =>
+                            <Tag key={category.id} text={category.tag} />)}
+                    </View>
                 </View>
             </Card.Content>
         </Card>
