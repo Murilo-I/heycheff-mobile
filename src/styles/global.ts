@@ -7,9 +7,7 @@ export const styles = StyleSheet.create({
     flexCenter: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center',
-        padding: 12,
-        gap: 16
+        alignItems: 'center'
     },
 
     flexInitial: {
@@ -33,6 +31,10 @@ export const styles = StyleSheet.create({
 
     gap8: {
         gap: 8
+    },
+
+    gap16: {
+        gap:16
     },
 
     justifyCenter: {

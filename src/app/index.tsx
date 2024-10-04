@@ -21,7 +21,7 @@ export default function Index() {
     }, [isSignedIn]);
 
     return (
-        <View style={[styles.flexCenter, styles.bgYellowOrange]}>
+        <View style={[styles.flexCenter, styles.p12, styles.gap16, styles.bgYellowOrange]}>
             <Image
                 style={[styles.h200, styles.w200, styles.mb8]}
                 source={require('@/assets/logo.png')}
