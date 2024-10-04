@@ -11,6 +11,7 @@ npm-debug.*
 web-build/
 .trunk
 android
+.env
 
 # macOS
 .DS_Store

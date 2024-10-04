@@ -145,6 +145,10 @@ export const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
 
+    btnAlign: {
+        padding: 8
+    },
+
     btnPrimary: {
         backgroundColor: colors.rose[200]
     },
@@ -170,6 +174,11 @@ export const styles = StyleSheet.create({
         fontSize: 16
     },
 
+    link: {
+        textDecorationLine: 'underline',
+        color: colors.rose[50]
+    },
+
     m8: {
         margin: 8
     },
@@ -180,6 +189,14 @@ export const styles = StyleSheet.create({
 
     mt8: {
         marginTop: 8
+    },
+
+    p4: {
+        padding: 4
+    },
+
+    p8: {
+        padding: 8
     },
 
     p12: {

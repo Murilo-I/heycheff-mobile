@@ -1,9 +1,12 @@
+import { ClerkProvider } from '@clerk/clerk-expo';
 import { useFonts } from 'expo-font';
 import { Slot } from 'expo-router';
 import { StatusBar, View } from 'react-native';
 import { PaperProvider } from 'react-native-paper';
 
 import { Loading } from '@/components/loading';
+
+const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY as string;
 
 export default function Layout() {
     const [fontsLoaded] = useFonts({
@@ -17,14 +20,16 @@ export default function Layout() {
 
     return (
         <View style={{ flex: 1 }}>
-            <PaperProvider>
-                <StatusBar
-                    barStyle="light-content"
-                    backgroundColor="transparent"
-                    translucent
-                />
-                <Slot />
-            </PaperProvider>
+            <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY}>
+                <PaperProvider>
+                    <StatusBar
+                        barStyle="light-content"
+                        backgroundColor="transparent"
+                        translucent
+                    />
+                    <Slot />
+                </PaperProvider>
+            </ClerkProvider>
         </View>
     );
 }

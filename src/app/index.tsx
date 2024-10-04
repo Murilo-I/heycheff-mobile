@@ -1,10 +1,25 @@
+import { useAuth } from "@clerk/clerk-expo";
+import { router, useNavigation } from "expo-router";
 import { Image, View } from "react-native";
-import { router } from "expo-router";
 
 import { Button } from "@/components/button";
 import { styles } from "@/styles/global";
+import { useEffect } from "react";
 
 export default function Index() {
+    const { isSignedIn, isLoaded } = useAuth();
+    const nav = useNavigation();
+
+    useEffect(() => {
+        if (!isLoaded) return;
+
+        if (isSignedIn) {
+            let routes = nav.getState().routes;
+            console.log(routes);
+            router.replace('/screen/feed');
+        }
+    }, [isSignedIn]);
+
     return (
         <View style={[styles.flexCenter, styles.bgYellowOrange]}>
             <Image

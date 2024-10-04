@@ -1,15 +1,45 @@
-import React from 'react';
-import { Pressable, Text, TextInput, View } from 'react-native';
-import { Icon } from 'react-native-paper';
+import { useOAuth } from '@clerk/clerk-expo';
+import * as Linking from 'expo-linking';
+import { router } from 'expo-router';
+import * as WebBrowser from 'expo-web-browser';
+import React, { useEffect, useState } from 'react';
+import { Text, TextInput, View } from 'react-native';
 import Animated, { FadeInDown, FadeInLeft, FadeInRight, FadeInUp } from 'react-native-reanimated';
 
 import { BackgroundImage } from '@/components/backgroundImage';
+import { Button } from '@/components/button';
 import { styles } from '@/styles/global';
 import { loginStyles } from '@/styles/login';
-import { router } from 'expo-router';
+
+WebBrowser.maybeCompleteAuthSession()
 
 export default function FormLogin() {
     const fadeInDown = (delay: number) => FadeInDown.delay(delay).duration(800).springify();
+    const [isLoading, setIsLoading] = useState(false);
+
+    const googleOAuth = useOAuth({ strategy: 'oauth_google' });
+
+    async function onGoogleSignIn() {
+        try {
+            setIsLoading(true);
+            const redirectUrl = Linking.createURL('/');
+            const oAuth = await googleOAuth.startOAuthFlow({ redirectUrl });
+            if (oAuth.authSessionResult?.type === 'success') {
+                if (oAuth.setActive)
+                    await oAuth.setActive({ session: oAuth.createdSessionId });
+            } else {
+                setIsLoading(false);
+            }
+        } catch (error) {
+            setIsLoading(false);
+            console.log(error);
+        }
+    }
+
+    useEffect(() => {
+        WebBrowser.warmUpAsync();
+        return () => { WebBrowser.coolDownAsync() }
+    }, []);
 
     return (
         <View style={[styles.wFull, styles.hfull, styles.bgYellowWhite]}>
@@ -31,11 +61,9 @@ export default function FormLogin() {
                             placeholder='Senha' placeholderTextColor={'#AAA'} secureTextEntry />
                     </Animated.View>
                     <Animated.View style={[styles.wFull, styles.mt8]} entering={fadeInDown(400)}>
-                        <Pressable style={[styles.wFull, styles.rounded, styles.p12, styles.bgRose]}>
-                            <Text style={[styles.fontRegular, styles.textCenter, styles.textYellowWhite]}>
-                                Login
-                            </Text>
-                        </Pressable>
+                        <Button>
+                            <Button.Title>Login</Button.Title>
+                        </Button>
                     </Animated.View>
                     <View style={loginStyles.menu}>
                         <Animated.View style={loginStyles.menuItem}
@@ -43,23 +71,20 @@ export default function FormLogin() {
                             <Text style={[styles.fontRegular, styles.textCenter, styles.mb8]}>
                                 Entre com Google
                             </Text>
-                            <Pressable style={[
-                                styles.btnSecondary, styles.rounded, styles.p12, styles.flexRow,
-                                styles.justifyCenter, styles.gap8
-                            ]}>
-                                <Icon size={20} source={require('@/assets/google.svg')} />
-                                <Text style={[styles.fontRegular, styles.textCenter]}>Login</Text>
-                            </Pressable>
+                            <Button variant='tertiary' onPress={onGoogleSignIn}
+                                icon='logo-google' isLoading={isLoading}>
+                                <Button.Title>Login</Button.Title>
+                            </Button>
                         </Animated.View>
                         <Animated.View style={loginStyles.menuItem}
                             entering={FadeInRight.delay(500).duration(800).springify()}>
                             <Text style={[styles.fontRegular, styles.textCenter, styles.mb8]}>
-                                Não possui conta?
+                                Não tem conta?
                             </Text>
-                            <Pressable style={[styles.btnSecondary, styles.rounded, styles.p12]}
+                            <Button variant='secondary'
                                 onPress={() => router.navigate('/screen/signup')}>
-                                <Text style={[styles.fontRegular, styles.textCenter]}>Sign Up</Text>
-                            </Pressable>
+                                <Button.Title>Sign Up</Button.Title>
+                            </Button>
                         </Animated.View>
                     </View>
                 </View>

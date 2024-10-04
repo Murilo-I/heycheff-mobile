@@ -3,8 +3,10 @@ import { Pressable, Text, TextInput, View } from 'react-native';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 
 import { BackgroundImage } from '@/components/backgroundImage';
+import { Button } from '@/components/button';
 import { styles } from '@/styles/global';
 import { loginStyles } from '@/styles/login';
+import { router } from 'expo-router';
 
 export default function FormSignup() {
     const fadeInDown = (delay: number) => FadeInDown.delay(delay).duration(800).springify();
@@ -33,11 +35,21 @@ export default function FormSignup() {
                             placeholder='Senha' placeholderTextColor={'#AAA'} secureTextEntry />
                     </Animated.View>
                     <Animated.View style={[styles.wFull, styles.mt8]} entering={fadeInDown(450)}>
-                        <Pressable style={[styles.wFull, styles.rounded, styles.p12, styles.bgRose]}>
-                            <Text style={[styles.fontRegular, styles.textCenter, styles.textYellowWhite]}>
-                                Sign Up
-                            </Text>
-                        </Pressable>
+                        <Button>
+                            <Button.Title>Login</Button.Title>
+                        </Button>
+                    </Animated.View>
+                    <Animated.View entering={fadeInDown(550)}
+                        style={[loginStyles.menu, styles.justifyCenter]}>
+                        <Text style={[styles.fontRegular]}>
+                            Já possui uma conta?
+                            {" "}
+                            <Pressable onPress={() => router.navigate('/screen/login')}>
+                                <Text style={[styles.fontRegular, styles.link]}>
+                                    Login
+                                </Text>
+                            </Pressable>
+                        </Text>
                     </Animated.View>
                 </View>
             </View>
