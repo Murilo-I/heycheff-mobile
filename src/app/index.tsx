@@ -3,6 +3,7 @@ import { router, useNavigation } from "expo-router";
 import { Image, View } from "react-native";
 
 import { Button } from "@/components/button";
+import { Loading } from "@/components/loading";
 import { styles } from "@/styles/global";
 import { useEffect } from "react";
 
@@ -15,23 +16,22 @@ export default function Index() {
 
         if (isSignedIn) {
             let routes = nav.getState().routes;
-            console.log(routes);
-            router.replace('/screen/feed');
+            router.replace('/screen/user');
         }
     }, [isSignedIn]);
 
-    return (
+    return isLoaded ? (
         <View style={[styles.flexCenter, styles.p12, styles.gap16, styles.bgYellowOrange]}>
             <Image
                 style={[styles.h200, styles.w200, styles.mb8]}
                 source={require('@/assets/logo.png')}
                 resizeMode="contain" />
-            <Button style={styles.w150} onPress={() => router.navigate('/screen/feed')}>
+            <Button btnStyle={styles.w150} onPress={() => router.navigate('/screen/feed')}>
                 <Button.Title>Explorar</Button.Title>
             </Button>
-            <Button style={styles.w150} onPress={() => router.navigate('/screen/login')}>
+            <Button btnStyle={styles.w150} onPress={() => router.navigate('/screen/login')}>
                 <Button.Title>Login</Button.Title>
             </Button>
         </View>
-    );
+    ) : <Loading />
 }

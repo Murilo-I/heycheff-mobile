@@ -16,7 +16,6 @@ WebBrowser.maybeCompleteAuthSession()
 export default function FormLogin() {
     const fadeInDown = (delay: number) => FadeInDown.delay(delay).duration(800).springify();
     const [isLoading, setIsLoading] = useState(false);
-
     const googleOAuth = useOAuth({ strategy: 'oauth_google' });
 
     async function onGoogleSignIn() {
@@ -25,8 +24,10 @@ export default function FormLogin() {
             const redirectUrl = Linking.createURL('/');
             const oAuth = await googleOAuth.startOAuthFlow({ redirectUrl });
             if (oAuth.authSessionResult?.type === 'success') {
-                if (oAuth.setActive)
-                    await oAuth.setActive({ session: oAuth.createdSessionId });
+                if (oAuth.setActive) {
+                    const session = oAuth.createdSessionId
+                    await oAuth.setActive({ session });
+                }
             } else {
                 setIsLoading(false);
             }

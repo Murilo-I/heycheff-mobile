@@ -5,6 +5,7 @@ import { StatusBar, View } from 'react-native';
 import { PaperProvider } from 'react-native-paper';
 
 import { Loading } from '@/components/loading';
+import { tokenCache } from '@/storage/tokenCache';
 
 const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY as string;
 
@@ -20,7 +21,7 @@ export default function Layout() {
 
     return (
         <View style={{ flex: 1 }}>
-            <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY}>
+            <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY} tokenCache={tokenCache}>
                 <PaperProvider>
                     <StatusBar
                         barStyle="light-content"

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-import { API_URL } from '@/util/endpoints';
 import { jwtStorage } from '@/storage/jwt';
+import { API_URL } from '@/util/endpoints';
 
 type TokenDetails = {
     token: string
@@ -17,8 +17,8 @@ const authApi = axios.create({
 
 async function authenticate(username: string, password: string) {
     const status = authApi.post<TokenDetails>("/auth", {
-        username: username,
-        password: password
+        username,
+        password
     }).then(resp => {
         jwtStorage.save(resp.data.token, resp.data.expiration.toString());
         return resp.status;
@@ -30,13 +30,26 @@ async function authenticate(username: string, password: string) {
 
 async function register(email: string, username: string, password: string) {
     const status = authApi.post("/user", {
-        email: email,
-        username: username,
-        password: password
+        email,
+        username,
+        password
     }).then(resp => resp.status)
         .catch(error => console.log("Error creating user: " + error));
 
     return status;
 }
 
-export const authServer = { authenticate, register }
+async function authenticateWithClerk(sessionId: string, userEmail: string) {
+    const status = authApi.post<TokenDetails>("/auth/clerk", {
+        sessionId,
+        userEmail
+    }).then(resp => {
+        jwtStorage.save(resp.data.token, resp.data.expiration.toString());
+        return resp.status;
+    })
+        .catch(error => console.log("Error authenticating: " + error));
+
+    return status;
+}
+
+export const authServer = { authenticate, register, authenticateWithClerk }

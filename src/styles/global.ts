@@ -49,6 +49,10 @@ export const styles = StyleSheet.create({
         justifyContent: 'space-around'
     },
 
+    justifyBetween: {
+        justifyContent: 'space-between'
+    },
+
     contentBetween: {
         alignContent: 'space-between'
     },
@@ -166,6 +170,10 @@ export const styles = StyleSheet.create({
         borderRadius: 10
     },
 
+    roundedPlus: {
+        borderRadius: 20
+    },
+
     fontRegular: {
         fontFamily: fontFamily.regular,
         fontSize: 16
@@ -191,6 +199,14 @@ export const styles = StyleSheet.create({
 
     mt8: {
         marginTop: 8
+    },
+
+    mt48: {
+        marginTop: 48
+    },
+
+    mx8: {
+        marginHorizontal: 8
     },
 
     p4: {

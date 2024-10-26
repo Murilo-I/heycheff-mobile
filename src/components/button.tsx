@@ -1,5 +1,5 @@
 import React, { createContext, useContext } from "react";
-import { Pressable, PressableProps, Text, TextProps, View } from "react-native";
+import { Pressable, PressableProps, StyleProp, Text, TextProps, View, ViewStyle } from "react-native";
 
 import { styles } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
@@ -11,7 +11,7 @@ type ButtonProps = PressableProps & {
     icon?: keyof typeof Ionicons.glyphMap
     variant?: Variants
     isLoading?: boolean
-    children: React.JSX.Element
+    btnStyle?: StyleProp<ViewStyle>
 }
 
 const ThemeContext = createContext<{ variant?: Variants }>({});
@@ -20,9 +20,26 @@ function Button({
     variant = "primary",
     icon,
     isLoading,
+    btnStyle,
     children,
     ...rest
 }: ButtonProps) {
+    let iconColor;
+
+    switch (variant) {
+        case 'primary':
+            iconColor = 'white';
+            break;
+
+        case 'secondary':
+            iconColor = '#F44646';
+            break;
+
+        default:
+            iconColor = 'black';
+            break;
+    }
+
     return (
         <View>
             <View style={[
@@ -33,13 +50,15 @@ function Button({
             ]}>
                 <Pressable
                     disabled={isLoading}
-                    style={[styles.flexRow, styles.justifyCenter, styles.gap8]}
+                    style={[styles.flexRow, styles.justifyCenter, styles.gap8, btnStyle]}
                     {...rest}
                 >
                     <ThemeContext.Provider value={{ variant }}>
                         {isLoading ? <Loading size='small' /> : (
                             <>
-                                {icon ? <Ionicons name={icon} size={20} color='black' /> : <></>}
+                                {icon ?
+                                    <Ionicons name={icon} size={20} color={iconColor} />
+                                    : null}
                                 {children}
                             </>
                         )}
@@ -52,12 +71,21 @@ function Button({
 
 function Title({ children, ...rest }: TextProps) {
     const { variant } = useContext(ThemeContext);
+    let textColor;
 
-    var textColor = {}
-    if (variant === 'primary')
-        textColor = styles.textYellowWhite
-    else if (variant === 'secondary')
-        textColor = styles.textRose
+    switch (variant) {
+        case 'primary':
+            textColor = styles.textYellowWhite;
+            break;
+
+        case 'secondary':
+            textColor = styles.textRose;
+            break
+
+        default:
+            textColor = {}
+            break;
+    }
 
     return <Text style={[styles.textCenter, styles.fontRegular, textColor]}
         {...rest}>
