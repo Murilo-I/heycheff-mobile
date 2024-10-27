@@ -68,7 +68,7 @@ export default function User() {
             <Text style={styles.fontRegular}>
                 Nenhum usuário localizado
             </Text>
-            <Button btnStyle={styles.w100} onPress={() => logout('/screen/login')}>
+            <Button btnStyle={styles.w100} onPress={() => logout('/start/login')}>
                 <Button.Title>Login</Button.Title>
             </Button>
         </View>

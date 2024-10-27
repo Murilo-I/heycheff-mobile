@@ -18,7 +18,7 @@ api.interceptors.response.use((response) => response, async (error: AxiosError) 
     const originalRequest = error.config;
 
     if (error.response?.status === 403) {
-        router.navigate('/screen/login');
+        router.navigate('/start/login');
     }
 
     return Promise.reject(error);

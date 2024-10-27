@@ -2,7 +2,7 @@ import { ClerkProvider } from '@clerk/clerk-expo';
 import { useFonts } from 'expo-font';
 import { Slot } from 'expo-router';
 import { StatusBar, View } from 'react-native';
-import { PaperProvider } from 'react-native-paper';
+import { DefaultTheme, PaperProvider, ThemeProvider } from 'react-native-paper';
 
 import { Loading } from '@/components/loading';
 import { tokenCache } from '@/storage/tokenCache';
@@ -22,7 +22,7 @@ export default function Layout() {
     return (
         <View style={{ flex: 1 }}>
             <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY} tokenCache={tokenCache}>
-                <PaperProvider>
+                <PaperProvider theme={DefaultTheme}>
                     <StatusBar
                         barStyle="light-content"
                         backgroundColor="transparent"

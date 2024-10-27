@@ -1,4 +1,4 @@
-import { Timer } from "lucide-react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import { FlatList, NativeScrollEvent, Text, View } from "react-native";
 
@@ -59,12 +59,11 @@ export default function Feed() {
                 scrollEventThrottle={100}
                 keyExtractor={receipt => receipt.id.toString()}
             />
-            {loading ? <Loading />
-                : <></>}
+            {loading ? <Loading /> : null}
             {!hasMore ?
                 <Text style={[styles.textCenter, styles.m8, styles.fontRegular, styles.textSmall]}>
                     Sem mais receitas
-                </Text> : <></>}
+                </Text> : null}
         </View>
     );
 }
@@ -77,7 +76,7 @@ const ReceiptCard = ({ receipt }: { receipt: ReceiptFeed }) => {
                 <Card.Title>{receipt.titulo}</Card.Title>
                 <View style={[styles.flexRow, styles.contentBetween]}>
                     <View style={[styles.flexInitial, styles.flexRow, { flex: .2 }]}>
-                        <Timer size={20} color="#AAA" />
+                        <Ionicons name="timer" size={20} color="#AAA" />
                         <Text style={[styles.fontRegular, styles.textGray]}>
                             {receipt.estimatedTime}
                         </Text>

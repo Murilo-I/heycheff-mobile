@@ -83,7 +83,7 @@ export default function FormLogin() {
                                 Não tem conta?
                             </Text>
                             <Button variant='secondary'
-                                onPress={() => router.navigate('/screen/signup')}>
+                                onPress={() => router.navigate('/start/signup')}>
                                 <Button.Title>Sign Up</Button.Title>
                             </Button>
                         </Animated.View>

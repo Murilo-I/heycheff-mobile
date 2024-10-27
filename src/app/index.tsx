@@ -29,7 +29,7 @@ export default function Index() {
             <Button btnStyle={styles.w150} onPress={() => router.navigate('/screen/feed')}>
                 <Button.Title>Explorar</Button.Title>
             </Button>
-            <Button btnStyle={styles.w150} onPress={() => router.navigate('/screen/login')}>
+            <Button btnStyle={styles.w150} onPress={() => router.navigate('/start/login')}>
                 <Button.Title>Login</Button.Title>
             </Button>
         </View>

@@ -44,7 +44,7 @@ export default function FormSignup() {
                         <Text style={[styles.fontRegular]}>
                             Já possui uma conta?
                             {" "}
-                            <Pressable onPress={() => router.navigate('/screen/login')}>
+                            <Pressable onPress={() => router.navigate('/start/login')}>
                                 <Text style={[styles.fontRegular, styles.link]}>
                                     Login
                                 </Text>
