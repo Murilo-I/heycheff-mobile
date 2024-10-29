@@ -1,6 +1,7 @@
 export const colors = {
   yellowOrange: {
     10: "#FFFFF0",
+    20: "#FFFFCC",
     100: "#FFD186",
     200: "#FCEE21",
   },

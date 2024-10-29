@@ -1,40 +1,47 @@
 import { useEffect, useState } from "react";
 import { Image, Text, TextProps, View, ViewProps } from "react-native";
 
-import { mediaServer } from "@/server/media";
+import { styles } from "@/styles/global";
+import { API_URL_MEDIA } from "@/util/endpoints";
 
 function Card({ children }: ViewProps) {
     return (
-        <View className="w-full flex-1 justify-center bg-transparent border-solid rounded-xl">
+        <View style={styles.card}>
             {children}
         </View>
     );
 }
 
 function Img({ src }: { src: string }) {
-    const [imageUrl, setImageUrl] = useState<string>("");
+    const [imageUrl, setImageUrl] = useState("");
+    const [aspectRatio, setAspectRatio] = useState(1);
 
     useEffect(() => {
         const fetchImageUrl = async () => {
-            setImageUrl(await mediaServer.displayMedia(src));
+            // const media = await mediaServer.displayMediaSize(src);
+            const url = `${API_URL_MEDIA}${src}`;
+            Image.getSize(url, (width, height) => {
+                const ratio = width > height ? 1.5 : .9;
+                setAspectRatio(ratio);
+            })
+            setImageUrl(url);
         }
         fetchImageUrl();
     }, []);
 
     return <Image source={{ uri: imageUrl }}
-        onLoad={() => URL.revokeObjectURL(imageUrl)}
-        className="w-full rounded-t-xl border-b border-yellowOrange-100" />
+        style={[styles.cardImage, { aspectRatio: aspectRatio }]} />
 }
 
 function Title({ children }: TextProps) {
-    return <Text className="font-regular font-bold text-xl text-center my-3">
+    return <Text style={styles.cardTitle}>
         {children}
     </Text>
 }
 
 function Content({ children }: ViewProps) {
     return (
-        <View className="flex-row items-center justify-center p-4">
+        <View style={styles.cardContent}>
             {children}
         </View>
     );
@@ -45,3 +52,4 @@ Card.Title = Title;
 Card.Content = Content;
 
 export { Card };
+

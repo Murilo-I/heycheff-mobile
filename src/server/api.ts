@@ -1,7 +1,7 @@
 import axios, { AxiosError } from 'axios';
 import { router } from "expo-router";
 
-import { API_URL } from '@/constants/endpoints';
+import { API_URL } from '@/util/endpoints';
 import { jwtStorage } from '@/storage/jwt';
 
 const api = axios.create({
@@ -18,7 +18,7 @@ api.interceptors.response.use((response) => response, async (error: AxiosError) 
     const originalRequest = error.config;
 
     if (error.response?.status === 403) {
-        router.navigate('/screen/login');
+        router.navigate('/start/login');
     }
 
     return Promise.reject(error);

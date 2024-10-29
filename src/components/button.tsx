@@ -1,58 +1,94 @@
-import clsx from "clsx";
-import { createContext, useContext } from "react";
-import { ActivityIndicator, Text, TextProps, TouchableOpacity, TouchableOpacityProps, View } from "react-native";
+import React, { createContext, useContext } from "react";
+import { Pressable, PressableProps, StyleProp, Text, TextProps, View, ViewStyle } from "react-native";
 
-type Variants = "primary" | "secondary";
+import { styles } from "@/styles/global";
+import { Ionicons } from "@expo/vector-icons";
+import { Loading } from "./loading";
 
-type ButtonProps = TouchableOpacityProps & {
+type Variants = "primary" | "secondary" | "tertiary";
+
+type ButtonProps = PressableProps & {
+    icon?: keyof typeof Ionicons.glyphMap
     variant?: Variants
     isLoading?: boolean
+    btnStyle?: StyleProp<ViewStyle>
 }
 
 const ThemeContext = createContext<{ variant?: Variants }>({});
 
 function Button({
     variant = "primary",
-    children,
+    icon,
     isLoading,
-    className,
+    btnStyle,
+    children,
     ...rest
 }: ButtonProps) {
+    let iconColor;
+
+    switch (variant) {
+        case 'primary':
+            iconColor = 'white';
+            break;
+
+        case 'secondary':
+            iconColor = '#F44646';
+            break;
+
+        default:
+            iconColor = 'black';
+            break;
+    }
+
     return (
-        <View className={className}>
-            <TouchableOpacity
-                activeOpacity={.7}
-                disabled={isLoading}
-                {...rest}
-            >
-                <View className={clsx(
-                    "w-full h-10 flex-row items-center justify-center rounded-xl gap-2 px-2",
-                    {
-                        "bg-rose-200": variant === "primary",
-                        "bg-yellowOrange-10 border border-l-rose-200": variant === "secondary"
-                    }
-                )}>
+        <View>
+            <View style={[
+                styles.p12, styles.rounded,
+                variant === 'primary'
+                    ? styles.btnPrimary
+                    : styles.btnSecondary
+            ]}>
+                <Pressable
+                    disabled={isLoading}
+                    style={[styles.flexRow, styles.justifyCenter, styles.gap8, btnStyle]}
+                    {...rest}
+                >
                     <ThemeContext.Provider value={{ variant }}>
-                        {isLoading ? <ActivityIndicator className="text-yellowOrange-100" /> : children}
+                        {isLoading ? <Loading size='small' /> : (
+                            <>
+                                {icon ?
+                                    <Ionicons name={icon} size={20} color={iconColor} />
+                                    : null}
+                                {children}
+                            </>
+                        )}
                     </ThemeContext.Provider>
-                </View>
-            </TouchableOpacity>
+                </Pressable>
+            </View>
         </View>
     );
 }
 
 function Title({ children, ...rest }: TextProps) {
     const { variant } = useContext(ThemeContext);
-    return <Text
-        className={clsx(
-            "text-base font-regular",
-            {
-                "text-yellowOrange-10": variant === "primary",
-                "text-rose-200": variant === "secondary"
-            }
-        )}
-        {...rest}
-    >
+    let textColor;
+
+    switch (variant) {
+        case 'primary':
+            textColor = styles.textYellowWhite;
+            break;
+
+        case 'secondary':
+            textColor = styles.textRose;
+            break
+
+        default:
+            textColor = {}
+            break;
+    }
+
+    return <Text style={[styles.textCenter, styles.fontRegular, textColor]}
+        {...rest}>
         {children}
     </Text>
 }

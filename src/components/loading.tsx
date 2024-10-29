@@ -1,6 +1,12 @@
 import { ActivityIndicator } from "react-native";
 
-export function Loading() {
-    return <ActivityIndicator
-        className="flex-1 bg-yellowOrange-100 items-center justify-center text-rose-200" />
+import { colors } from "@/styles/colors";
+import { styles } from "@/styles/global";
+
+type LoadingProps = {
+    size?: number | "small" | "large" | undefined
+}
+
+export function Loading({ size = 'large' }: LoadingProps) {
+    return <ActivityIndicator style={styles.flexCenter} size={size} color={colors.yellowOrange[100]} />
 }
