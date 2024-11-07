@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import { jwtStorage } from '@/storage/jwt';
+import { userId } from '@/storage/userId';
 import { API_URL } from '@/util/endpoints';
 
 type TokenDetails = {
@@ -20,21 +21,10 @@ async function authenticate(username: string, password: string) {
         username,
         password
     }).then(resp => {
-        jwtStorage.save(resp.data.token, resp.data.expiration.toString());
+        putStorage(resp.data);
         return resp.status;
     })
         .catch(error => console.log("Error authenticating: " + error));
-
-    return status;
-}
-
-async function register(email: string, username: string, password: string) {
-    const status = authApi.post("/user", {
-        email,
-        username,
-        password
-    }).then(resp => resp.status)
-        .catch(error => console.log("Error creating user: " + error));
 
     return status;
 }
@@ -44,7 +34,7 @@ async function authenticateWithClerk(sessionId: string, userEmail: string) {
         sessionId,
         userEmail
     }).then(resp => {
-        jwtStorage.save(resp.data.token, resp.data.expiration.toString());
+        putStorage(resp.data);
         return resp.status;
     })
         .catch(error => console.log("Error authenticating: " + error));
@@ -52,4 +42,9 @@ async function authenticateWithClerk(sessionId: string, userEmail: string) {
     return status;
 }
 
-export const authServer = { authenticate, register, authenticateWithClerk }
+async function putStorage(tokenDetails: TokenDetails) {
+    jwtStorage.save(tokenDetails.token, tokenDetails.expiration.toString());
+    userId.save(tokenDetails.userId);
+}
+
+export const authServer = { authenticate, authenticateWithClerk }

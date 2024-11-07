@@ -16,6 +16,7 @@ export type ReceiptFeed = {
 }
 
 type ReceiptModal = {
+    userId: string,
     steps: Step[]
 }
 
@@ -27,12 +28,13 @@ export type ReceiptRequest = {
 
 const baseUrl = '/receitas'
 
-async function loadFeed(pageNum: number, pageSize: number) {
+async function loadFeed(pageNum: number, pageSize: number, userId?: string) {
     try {
         return await api.get<Pageable<ReceiptFeed>>(baseUrl, {
             params: {
                 pageNum,
-                pageSize
+                pageSize,
+                userId
             }
         });
     } catch (error) {

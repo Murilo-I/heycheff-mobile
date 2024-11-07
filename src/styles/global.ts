@@ -17,11 +17,25 @@ export const styles = StyleSheet.create({
         gap: 4
     },
 
+    flex1: {
+        flex: 1,
+        width: '100%'
+    },
+
+    flexContent: {
+        flex: -1
+    },
+
+    flexHalf: {
+        flex: .5
+    },
+
     flexRow: {
         flexDirection: 'row'
     },
 
     flexColumn: {
+        flex: 1,
         flexDirection: 'column'
     },
 
@@ -34,7 +48,7 @@ export const styles = StyleSheet.create({
     },
 
     gap16: {
-        gap:16
+        gap: 16
     },
 
     justifyCenter: {
@@ -53,8 +67,20 @@ export const styles = StyleSheet.create({
         justifyContent: 'space-between'
     },
 
+    justifyEvenly: {
+        justifyContent: 'space-evenly'
+    },
+
     contentBetween: {
         alignContent: 'space-between'
+    },
+
+    alignCenter: {
+        alignItems: 'center'
+    },
+
+    alignStart: {
+        alignItems: 'flex-start'
     },
 
     absolute: {
@@ -97,6 +123,23 @@ export const styles = StyleSheet.create({
         marginLeft: 4,
         backgroundColor: colors.yellowOrange[200],
         borderRadius: 4
+    },
+
+    postGrid: {
+        gap: 2,
+        width: '100%',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'flex-start'
+    },
+
+    postImage: {
+        height: 124,
+        width: '33%',
+        maxWidth: 124,
+        borderWidth: 1,
+        borderColor: '#AAA',
+        marginHorizontal: 1
     },
 
     bgYellowOrange: {
@@ -187,6 +230,10 @@ export const styles = StyleSheet.create({
     link: {
         textDecorationLine: 'underline',
         color: colors.rose[50]
+    },
+
+    borderLeft: {
+        borderLeftWidth: 2
     },
 
     m8: {
