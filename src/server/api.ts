@@ -8,8 +8,8 @@ const api = axios.create({
     baseURL: API_URL,
 });
 
-api.interceptors.request.use(config => {
-    const jwt = jwtStorage.getToken();
+api.interceptors.request.use(async config => {
+    const jwt = await jwtStorage.getToken();
     config.headers.Authorization = `Bearer ${jwt}`;
     return config;
 });

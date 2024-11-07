@@ -17,14 +17,14 @@ export default function Feed() {
 
     const pageSize = 4;
 
-    function loadReceipt() {
-        receiptServer.loadFeed(pageNum, pageSize)
+    async function loadReceipt() {
+        return receiptServer.loadFeed(pageNum, pageSize)
             .then(feedResponse => {
-                if (totalReceipts === 0)
+                if (totalReceipts === 0) {
                     setTotalReceipts(feedResponse.data.count);
-                else
+                } else {
                     setHasMore(receipts.length < totalReceipts);
-
+                }
                 setReceipts([...receipts, ...feedResponse.data.items]);
                 setPageNum(pageNum + 1);
             }).catch(error => console.log(error));
@@ -33,20 +33,22 @@ export default function Feed() {
     function loadMore({
         layoutMeasurement,
         contentOffset,
-        contentSize }: NativeScrollEvent) {
-
-        const paddingToBottom = 20;
+        contentSize
+    }: NativeScrollEvent) {
+        const paddingToBottom = 80;
         const hitTheBottom = layoutMeasurement.height + contentOffset.y
             >= contentSize.height - paddingToBottom;
 
         if (hitTheBottom && hasMore) {
             setLoading(true);
-            loadReceipt();
-            setLoading(false);
+            loadReceipt().then(() => setLoading(false));
         }
     }
 
-    useEffect(() => loadReceipt(), []);
+    useEffect(() => {
+        const fetchReceipt = async () => loadReceipt();
+        fetchReceipt();
+    }, []);
 
     return (
         <View style={{ flex: 1, marginTop: 48 }}>
@@ -56,10 +58,10 @@ export default function Feed() {
                 onScroll={({ nativeEvent }) => {
                     if (!loading) loadMore(nativeEvent);
                 }}
-                scrollEventThrottle={100}
+                scrollEventThrottle={200}
                 keyExtractor={receipt => receipt.id.toString()}
+                ListFooterComponent={loading ? <Loading /> : null}
             />
-            {loading ? <Loading /> : null}
             {!hasMore ?
                 <Text style={[styles.textCenter, styles.m8, styles.fontRegular, styles.textSmall]}>
                     Sem mais receitas

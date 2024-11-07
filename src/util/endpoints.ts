@@ -8,7 +8,7 @@ const netInfo = async () => {
         });
 }
 
-const NGROK_SERVER = 'https://38ba-2804-1b1-fac1-7993-6139-5a69-a54b-6822.ngrok-free.app';
+const NGROK_SERVER = 'https://596d-177-45-191-118.ngrok-free.app';
 const URL_DEV = `${NGROK_SERVER}/heycheff`;
 const URL_MEDIA_DEV = NGROK_SERVER;
 
