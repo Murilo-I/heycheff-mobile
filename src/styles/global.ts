@@ -87,6 +87,10 @@ export const styles = StyleSheet.create({
         position: 'absolute'
     },
 
+    z1: {
+        zIndex: 1
+    },
+
     card: {
         flex: 1,
         margin: 8,
@@ -137,8 +141,6 @@ export const styles = StyleSheet.create({
         height: 124,
         width: '33%',
         maxWidth: 124,
-        borderWidth: 1,
-        borderColor: '#AAA',
         marginHorizontal: 1
     },
 
@@ -254,6 +256,10 @@ export const styles = StyleSheet.create({
 
     mx8: {
         marginHorizontal: 8
+    },
+
+    my16: {
+        marginVertical: 16
     },
 
     p4: {

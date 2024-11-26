@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BottomNavigation } from "react-native-paper";
+import { BottomNavigation, TouchableRipple } from "react-native-paper";
 
 import { store } from "@/redux/store";
 import { colors } from "@/styles/colors";
@@ -40,6 +40,7 @@ export default function Layout() {
                 activeColor={colors.yellowOrange[10]}
                 activeIndicatorStyle={[styles.bgRose, { width: 32 }]}
                 sceneAnimationType='shifting'
+                renderTouchable={({ key, ...props }) => <TouchableRipple key={key} {...props} />}
             />
         </Provider>
     );
