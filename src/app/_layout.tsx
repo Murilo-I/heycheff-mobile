@@ -2,10 +2,11 @@ import { ClerkProvider } from '@clerk/clerk-expo';
 import { useFonts } from 'expo-font';
 import { Slot } from 'expo-router';
 import { StatusBar, View } from 'react-native';
-import { DefaultTheme, PaperProvider, ThemeProvider } from 'react-native-paper';
+import { DefaultTheme, PaperProvider } from 'react-native-paper';
 
 import { Loading } from '@/components/loading';
 import { tokenCache } from '@/storage/tokenCache';
+import { colors } from '@/styles/colors';
 
 const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY as string;
 
@@ -24,8 +25,8 @@ export default function Layout() {
             <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY} tokenCache={tokenCache}>
                 <PaperProvider theme={DefaultTheme}>
                     <StatusBar
-                        barStyle="light-content"
-                        backgroundColor="transparent"
+                        barStyle="dark-content"
+                        backgroundColor={colors.yellowOrange[100]}
                         translucent
                     />
                     <Slot />

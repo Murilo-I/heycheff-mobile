@@ -56,6 +56,7 @@ export default function Feed() {
                 onScroll={({ nativeEvent }) => {
                     if (!loading) loadMore(nativeEvent);
                 }}
+                windowSize={7}
                 scrollEventThrottle={200}
                 keyExtractor={receipt => receipt.id.toString()}
                 ListFooterComponent={loading ? <Loading /> : null}

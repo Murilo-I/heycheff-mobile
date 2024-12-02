@@ -180,6 +180,10 @@ export const styles = StyleSheet.create({
         textAlign: 'center'
     },
 
+    textJustify: {
+        textAlign: 'justify'
+    },
+
     textSmall: {
         fontSize: 12
     },

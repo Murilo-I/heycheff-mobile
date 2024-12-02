@@ -21,6 +21,7 @@ function Button({
     icon,
     isLoading,
     btnStyle,
+    disabled,
     children,
     ...rest
 }: ButtonProps) {
@@ -41,7 +42,7 @@ function Button({
     }
 
     return (
-        <View>
+        <View style={disabled ? { opacity: .8 } : null}>
             <View style={[
                 styles.p12, styles.rounded,
                 variant === 'primary'
@@ -49,7 +50,7 @@ function Button({
                     : styles.btnSecondary
             ]}>
                 <Pressable
-                    disabled={isLoading}
+                    disabled={isLoading || disabled}
                     style={[styles.flexRow, styles.justifyCenter, styles.gap8, btnStyle]}
                     {...rest}
                 >

@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Image, SectionList, Text, View } from "react-native";
+import { Image, Pressable, SectionList, Text, View } from "react-native";
 
 import { Modal } from "@/components/modal";
 import { ReceiptFeed, ReceiptModal, receiptServer } from "@/server/receipt";
@@ -8,6 +8,7 @@ import { Step } from "@/server/step";
 import { UserInfo, userServer } from "@/server/user";
 import { styles } from "@/styles/global";
 import { API_URL_MEDIA } from "@/util/endpoints";
+import { ReceiptStep } from "./receiptStep";
 
 type ReceiptDetailsProps = {
     receipt: ReceiptFeed,
@@ -18,6 +19,7 @@ type ReceiptDetailsProps = {
 export const ReceiptDetails = ({ receipt, showModal, onClose }: ReceiptDetailsProps) => {
     const [receiptModal, setReceiptModal] = useState<ReceiptModal>();
     const [owner, setOwner] = useState<UserInfo>();
+    const [showStepModal, setShowStepModal] = useState(false);
 
     function formatData(steps: Step[] | undefined) {
         if (steps) {
@@ -48,12 +50,16 @@ export const ReceiptDetails = ({ receipt, showModal, onClose }: ReceiptDetailsPr
 
     return (
         <Modal title={receipt.titulo} visible={showModal} onClose={() => onClose(false)}>
-            <View style={styles.flexCenter}>
+            <Pressable style={styles.flexCenter} onPress={() => setShowStepModal(true)}>
                 <Ionicons name="play-circle-outline" size={40}
                     color="white" style={[styles.absolute, styles.z1]} />
                 <Image source={{ uri: API_URL_MEDIA + receipt.thumb }}
                     style={[styles.flex1, styles.rounded]} />
-            </View>
+            </Pressable>
+            {
+                receiptModal && <ReceiptStep steps={receiptModal.steps}
+                    showModal={showStepModal} onClose={setShowStepModal} />
+            }
             <View style={[styles.flexRow, styles.contentBetween, styles.my16]}>
                 <View style={[styles.flexInitial, styles.flexRow, { flex: .3 }]}>
                     <Ionicons name="timer" size={20} color="#AAA" />
@@ -81,7 +87,7 @@ export const ReceiptDetails = ({ receipt, showModal, onClose }: ReceiptDetailsPr
                     sections={formatData(receiptModal?.steps)}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => (
-                        <View style={[styles.m8]}>
+                        <View style={styles.m8}>
                             <Text style={styles.fontRegular}>
                                 <Ionicons name="chevron-forward-circle-sharp" /> {item}
                             </Text>

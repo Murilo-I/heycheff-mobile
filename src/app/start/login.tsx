@@ -1,4 +1,4 @@
-import { useOAuth } from '@clerk/clerk-expo';
+import { useAuth, useOAuth } from '@clerk/clerk-expo';
 import * as Linking from 'expo-linking';
 import { router } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
@@ -17,12 +17,16 @@ export default function FormLogin() {
     const fadeInDown = (delay: number) => FadeInDown.delay(delay).duration(800).springify();
     const [isLoading, setIsLoading] = useState(false);
     const googleOAuth = useOAuth({ strategy: 'oauth_google' });
+    const { isSignedIn } = useAuth();
 
     async function onGoogleSignIn() {
         try {
+            if (isSignedIn) router.replace('/screen/user');
+
             setIsLoading(true);
             const redirectUrl = Linking.createURL('/');
             const oAuth = await googleOAuth.startOAuthFlow({ redirectUrl });
+
             if (oAuth.authSessionResult?.type === 'success') {
                 if (oAuth.setActive) {
                     const session = oAuth.createdSessionId
