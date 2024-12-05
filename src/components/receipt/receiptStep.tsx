@@ -36,19 +36,14 @@ export const ReceiptStep = ({ steps, showModal, onClose }: ReceiptStepProps) => 
 
     useEffect(() => {
         setActiveStep(steps[currentIndex]);
-        let videoPath;
-
-        if (activeStep === undefined) {
-            videoPath = API_URL_MEDIA + steps[0].path;
-        } else {
-            videoPath = API_URL_MEDIA + activeStep.path;
-        }
+        let videoPath = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
 
         if (player === undefined) {
             setPlayer(createVideoPlayer(videoPath));
         } else {
             player.replace(videoPath);
         }
+        player?.play();
     }, [currentIndex]);
 
     return (
@@ -63,7 +58,7 @@ export const ReceiptStep = ({ steps, showModal, onClose }: ReceiptStepProps) => 
                         {`Passo ${currentIndex + 1} de ${steps.length}`}
                     </Text>
                 </View>
-                <ScrollView style={[styles.wFull, { flex: .9 }]}>
+                <ScrollView style={styles.flex1}>
                     <View>
                         <Text style={[styles.fontRegular, styles.textLarge, styles.textBold, styles.my16]}>
                             Ingredientes
@@ -86,7 +81,7 @@ export const ReceiptStep = ({ steps, showModal, onClose }: ReceiptStepProps) => 
                         </Text>
                     </View>
                 </ScrollView>
-                <View style={[styles.flexRow, styles.justifyBetween, styles.mt48]}>
+                <View style={[styles.flexRow, styles.justifyBetween, styles.mt16]}>
                     <Button btnStyle={styles.w150} onPress={prevStep}
                         disabled={currentIndex === 0}>
                         <Button.Title>Voltar</Button.Title>

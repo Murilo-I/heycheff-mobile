@@ -1,8 +1,12 @@
 import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Image, Pressable, SectionList, Text, View } from "react-native";
 
 import { Modal } from "@/components/modal";
+import { useAppDispatch } from "@/redux/hooks";
+import { setNavIndex, tabs } from "@/redux/nav/navigationSlice";
+import { set3PartyProfileId } from "@/redux/user/thirdPartySlice";
 import { ReceiptFeed, ReceiptModal, receiptServer } from "@/server/receipt";
 import { Step } from "@/server/step";
 import { UserInfo, userServer } from "@/server/user";
@@ -20,6 +24,7 @@ export const ReceiptDetails = ({ receipt, showModal, onClose }: ReceiptDetailsPr
     const [receiptModal, setReceiptModal] = useState<ReceiptModal>();
     const [owner, setOwner] = useState<UserInfo>();
     const [showStepModal, setShowStepModal] = useState(false);
+    const dispatch = useAppDispatch();
 
     function formatData(steps: Step[] | undefined) {
         if (steps) {
@@ -32,6 +37,13 @@ export const ReceiptDetails = ({ receipt, showModal, onClose }: ReceiptDetailsPr
         } else {
             return [];
         }
+    }
+
+    function show3PartyProfile() {
+        dispatch(set3PartyProfileId(receiptModal?.userId));
+        dispatch(setNavIndex(tabs.PERFIL));
+        router.navigate('/screen/user');
+        onClose(false);
     }
 
     useEffect(() => {
@@ -73,9 +85,11 @@ export const ReceiptDetails = ({ receipt, showModal, onClose }: ReceiptDetailsPr
                 <View style={[styles.flexRow, styles.justifyEnd, { flex: .7 }]}>
                     <Text style={styles.fontRegular}>
                         {`Chef: `}
-                        <Text style={[styles.fontRegular, styles.link]}>
-                            @{owner?.username}
-                        </Text>
+                        <Pressable onPress={show3PartyProfile}>
+                            <Text style={[styles.fontRegular, styles.link]}>
+                                @{owner?.username}
+                            </Text>
+                        </Pressable>
                     </Text>
                 </View>
             </View>

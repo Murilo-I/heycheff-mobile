@@ -6,7 +6,7 @@ import { Button } from "@/components/button";
 import { jwtStorage } from "@/storage/jwt";
 import { styles } from "@/styles/global";
 
-export function logout(redirect: Href<string | object>) {
+export function logout(redirect: Href) {
     const { signOut } = useAuth();
     jwtStorage.removeAll();
     signOut().then(() => router.replace(redirect));

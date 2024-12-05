@@ -87,6 +87,10 @@ export const styles = StyleSheet.create({
         position: 'absolute'
     },
 
+    transparent: {
+        opacity: .7
+    },
+
     z1: {
         zIndex: 1
     },
@@ -252,6 +256,10 @@ export const styles = StyleSheet.create({
 
     mt8: {
         marginTop: 8
+    },
+
+    mt16: {
+        marginTop: 16
     },
 
     mt48: {
