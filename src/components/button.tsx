@@ -45,9 +45,9 @@ function Button({
         <View style={disabled ? { opacity: .8 } : null}>
             <View style={[
                 styles.p12, styles.rounded,
-                variant === 'primary'
-                    ? styles.btnPrimary
-                    : styles.btnSecondary
+                variant === 'primary' ? styles.btnPrimary
+                    : variant === 'secondary' ? styles.btnSecondary
+                        : styles.btnTertiary
             ]}>
                 <Pressable
                     disabled={isLoading || disabled}

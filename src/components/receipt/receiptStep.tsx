@@ -36,14 +36,19 @@ export const ReceiptStep = ({ steps, showModal, onClose }: ReceiptStepProps) => 
 
     useEffect(() => {
         setActiveStep(steps[currentIndex]);
-        let videoPath = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
+        let videoPath;
+
+        if (activeStep === undefined) {
+            videoPath = API_URL_MEDIA + steps[0].path;
+        } else {
+            videoPath = API_URL_MEDIA + activeStep.path;
+        }
 
         if (player === undefined) {
             setPlayer(createVideoPlayer(videoPath));
         } else {
             player.replace(videoPath);
         }
-        player?.play();
     }, [currentIndex]);
 
     return (

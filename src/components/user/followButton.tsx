@@ -20,7 +20,7 @@ export const FollowButton = () => {
 
     return (
         <Button onPress={follow} style={styles.wFull}
-            variant={isFollowing ? "tertiary" : "primary"}>
+            variant={isFollowing ? "secondary" : "primary"}>
             <Button.Title>
                 {isFollowing ? "Desseguir" : "Seguir"}
             </Button.Title>

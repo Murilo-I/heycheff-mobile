@@ -9,7 +9,7 @@ import { UserMenu } from "@/components/user/menu";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { ProfileContext } from "@/redux/user/profileContext";
 import { addContent, resetContent, setInfo } from "@/redux/user/profileSlice";
-import { reset3PartyProfile } from "@/redux/user/thirdPartySlice";
+import { reset3PartyProfile, set3PartyProfileId } from "@/redux/user/thirdPartySlice";
 import { authServer } from "@/server/auth";
 import { receiptServer } from "@/server/receipt";
 import { FollowResponse, userServer } from "@/server/user";
@@ -17,7 +17,8 @@ import { jwtStorage } from "@/storage/jwt";
 import { userId } from "@/storage/userId";
 import { styles } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
-import Config, { logout } from "./config";
+import { router } from "expo-router";
+import Config from "./config";
 import Posts from "./posts";
 
 export default function User(thirdPartyId?: string) {
@@ -66,10 +67,8 @@ export default function User(thirdPartyId?: string) {
             }).catch(error => console.log(error));
     }
 
-    function goBack() {
-        dispatch(reset3PartyProfile());
-        fetchUserProfile();
-        fetchUserContent();
+    async function goBack() {
+        dispatch(set3PartyProfileId(await userId.get()));
     }
 
     useEffect(() => {
@@ -95,29 +94,36 @@ export default function User(thirdPartyId?: string) {
     }, []);
 
     useEffect(() => {
+        setIsFirstLoad(true);
         const hasFollowed = followingIds.following.length;
         const checkIfFollowing = async () => {
             if (hasFollowed) {
                 return followingIds.following
                     .filter(fid => fid === thirdPartyId).length > 0;
-            } else if (thirdPartyId && userProfile.info) {
+            } else if (userProfile.info) {
                 const uid = await userId.get();
                 return userProfile.info.followersIds
                     .filter(fid => fid === uid).length > 0;
             } else {
-                return false;
+                return isFollowing;
             }
         }
+        const setUserProfile = async () => {
+            if (thirdPartyId) {
+                const isOwnProfile = thirdPartyId === await userId.get();
+                fetchUserProfile().then(
+                    () => checkIfFollowing().then(setIsFollowing));
 
-        if (thirdPartyId) {
-            fetchUserProfile();
-            if (!hasFollowed) {
-                dispatch(resetContent());
-                fetchUserContent();
+                if (!hasFollowed || isOwnProfile) {
+                    dispatch(resetContent());
+                    fetchUserContent();
+                }
+                if (isOwnProfile) {
+                    dispatch(reset3PartyProfile());
+                }
             }
         }
-
-        checkIfFollowing().then(setIsFollowing);
+        setUserProfile().then(() => setIsFirstLoad(false));
     }, [thirdPartyId, followingIds]);
 
     if (isFirstLoad) return <Loading />
@@ -127,7 +133,7 @@ export default function User(thirdPartyId?: string) {
             styles.flexColumn, styles.alignCenter,
             styles.mt48, styles.mx8, styles.gap16
         ]}>
-            {userProfile.info ? (
+            {(userProfile.info && !isFirstLoad) ? (
                 <>
                     {
                         thirdPartyId ? (
@@ -178,7 +184,7 @@ export default function User(thirdPartyId?: string) {
             <Text style={styles.fontRegular}>
                 Nenhum usuário localizado
             </Text>
-            <Button btnStyle={styles.w100} onPress={() => logout('/start/login')}>
+            <Button btnStyle={styles.w100} onPress={() => router.replace('/start/login')}>
                 <Button.Title>Login</Button.Title>
             </Button>
         </View>
