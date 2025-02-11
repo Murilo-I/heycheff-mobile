@@ -1,5 +1,5 @@
 import { useAuth, useUser } from "@clerk/clerk-expo";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Image, Pressable, Text, View } from "react-native";
 
 import { Button } from "@/components/button";
