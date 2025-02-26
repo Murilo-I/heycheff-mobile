@@ -1,13 +1,14 @@
-import { Ionicons } from "@expo/vector-icons"
-import { createVideoPlayer, VideoPlayer, VideoView } from "expo-video"
-import { Dispatch, SetStateAction, useEffect, useState } from "react"
-import { ScrollView, Text, View } from "react-native"
+import { Ionicons } from "@expo/vector-icons";
+import { createVideoPlayer, VideoPlayer, VideoView } from "expo-video";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { ScrollView, Text, View } from "react-native";
 
-import { Step } from "@/server/step"
-import { styles } from "@/styles/global"
-import { API_URL_MEDIA } from "@/util/endpoints"
-import { Button } from "../button"
-import { Modal } from "../modal"
+import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
+import { Step } from "@/server/step";
+import { styles } from "@/styles/global";
+import { API_URL_MEDIA } from "@/util/endpoints";
+import { Button } from "../button";
+import { Modal } from "../modal";
 
 type ReceiptStepProps = {
     steps: Step[],
@@ -19,6 +20,8 @@ export const ReceiptStep = ({ steps, showModal, onClose }: ReceiptStepProps) => 
     const [activeStep, setActiveStep] = useState<Step>();
     const [currentIndex, setCurrentIndex] = useState(0);
     const [player, setPlayer] = useState<VideoPlayer>();
+
+    const { transcript, isRecognizing, stopRecognition, clearTranscript } = useSpeechRecognition();
 
     function nextStep() {
         setCurrentIndex(currentIndex + 1);
@@ -32,6 +35,7 @@ export const ReceiptStep = ({ steps, showModal, onClose }: ReceiptStepProps) => 
         onClose(false);
         player?.pause();
         setCurrentIndex(0);
+        stopRecognition();
     }
 
     useEffect(() => {
@@ -49,7 +53,16 @@ export const ReceiptStep = ({ steps, showModal, onClose }: ReceiptStepProps) => 
         } else {
             player.replace(videoPath);
         }
+        clearTranscript
     }, [currentIndex]);
+
+    useEffect(() => {
+        if (transcript.includes("heycheff")) {
+            if (transcript.includes("próximo passo")) nextStep();
+            else if (transcript.includes("voltar")) prevStep();
+            else if (transcript.includes("fechar")) close();
+        }
+    }, [transcript]);
 
     return (
         <Modal title={`Passo ${currentIndex + 1}`} animationType="fade"
