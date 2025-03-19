@@ -5,9 +5,9 @@ import { Loading } from "@/components/loading";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { addContent, increasePage } from "@/redux/user/profileSlice";
 import { ReceiptFeed, receiptServer } from "@/server/receipt";
+import { userId } from "@/storage/userId";
 import { styles } from "@/styles/global";
 import { API_URL_MEDIA } from "@/util/endpoints";
-import { userId } from "@/storage/userId";
 
 export default function Posts() {
     const [loading, setLoading] = useState(false);
@@ -30,15 +30,14 @@ export default function Posts() {
 
         if (hitTheBottom && hasMore) {
             setLoading(true);
-            const id = userId.get().then(id => {
-                if (id) {
-                    return id;
-                } else {
-                    return undefined;
-                }
-            });
+            const id = await userId.get();
 
-            receiptServer.loadFeed(userProfile.contentPage, pageSize, await id)
+            if (totalReceipts === 0) {
+                dispatch(increasePage());
+                dispatch(increasePage());
+            }
+
+            receiptServer.loadFeed(userProfile.contentPage, pageSize, id)
                 .then(feedResponse => {
                     if (totalReceipts === 0) {
                         setTotalReceipts(feedResponse.data.count);

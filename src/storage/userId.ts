@@ -4,7 +4,7 @@ const key = "heycheff.userId";
 
 async function get() {
     try {
-        return SecureStore.getItem(key);
+        return SecureStore.getItem(key) || undefined;
     } catch (error) {
         throw error;
     }

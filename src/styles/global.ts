@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native"
+import { StyleSheet } from "react-native";
 
 import { colors } from "./colors";
 import { fontFamily } from "./fontFamily";
@@ -85,6 +85,10 @@ export const styles = StyleSheet.create({
 
     absolute: {
         position: 'absolute'
+    },
+
+    transparent: {
+        opacity: .7
     },
 
     z1: {
@@ -209,8 +213,15 @@ export const styles = StyleSheet.create({
     },
 
     btnSecondary: {
-        backgroundColor: colors.yellowOrange[10],
+        backgroundColor: 'transparent',
         borderColor: colors.rose[200],
+        borderStyle: 'solid',
+        borderWidth: 2
+    },
+
+    btnTertiary: {
+        backgroundColor: colors.yellowOrange[10],
+        borderColor: 'black',
         borderStyle: 'solid',
         borderWidth: 2
     },
@@ -252,6 +263,10 @@ export const styles = StyleSheet.create({
 
     mt8: {
         marginTop: 8
+    },
+
+    mt16: {
+        marginTop: 16
     },
 
     mt48: {

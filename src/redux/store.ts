@@ -1,10 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
 
+import navigationReducer from "./nav/navigationSlice";
 import profileReducer from "./user/profileSlice";
+import thirdPartyReducer from "./user/thirdPartySlice";
 
 export const store = configureStore({
     reducer: {
-        profile: profileReducer
+        profile: profileReducer,
+        navigation: navigationReducer,
+        thirdParty: thirdPartyReducer,
     }
 });
 

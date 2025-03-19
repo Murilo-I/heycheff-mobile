@@ -1,7 +1,7 @@
-import { UserInfo } from "@/server/user";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { ReceiptFeed } from '@/server/receipt';
+import { UserInfo } from "@/server/user";
 import { RootState } from "../store";
 
 export interface UserProfileState {
@@ -30,10 +30,15 @@ export const profileSlice = createSlice({
 
         increasePage: state => {
             state.contentPage += 1;
+        },
+
+        resetContent: state => {
+            state.content = [];
+            state.contentPage = 0;
         }
     }
 });
 
-export const { setInfo, addContent, increasePage } = profileSlice.actions;
+export const { setInfo, addContent, increasePage, resetContent } = profileSlice.actions;
 export const userProfile = (state: RootState) => state.profile;
 export default profileSlice.reducer;
