@@ -25,7 +25,10 @@ export const profileSlice = createSlice({
         },
 
         addContent: (state, action: PayloadAction<ReceiptFeed[]>) => {
-            state.content = [...state.content, ...action.payload];
+            const contents = [...state.content, ...action.payload];
+            const contentsMap = new Map();
+            contents.forEach(item => contentsMap.set(item.id, item));
+            state.content = Array.from(contentsMap.values());
         },
 
         increasePage: state => {

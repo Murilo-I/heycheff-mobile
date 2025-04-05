@@ -12,6 +12,7 @@ type ButtonProps = PressableProps & {
     variant?: Variants
     isLoading?: boolean
     btnStyle?: StyleProp<ViewStyle>
+    containerStyle?: StyleProp<ViewStyle>
 }
 
 const ThemeContext = createContext<{ variant?: Variants }>({});
@@ -23,26 +24,18 @@ function Button({
     btnStyle,
     disabled,
     children,
+    containerStyle,
     ...rest
 }: ButtonProps) {
-    let iconColor;
-
-    switch (variant) {
-        case 'primary':
-            iconColor = 'white';
-            break;
-
-        case 'secondary':
-            iconColor = '#F44646';
-            break;
-
-        default:
-            iconColor = 'black';
-            break;
-    }
+    const colors: Record<Variants, string> = {
+        primary: "white",
+        secondary: "#F44646",
+        tertiary: "black"
+    };
+    const iconColor = colors[variant];
 
     return (
-        <View style={disabled ? { opacity: .8 } : null}>
+        <View style={[containerStyle, disabled ? { opacity: .8 } : {}]}>
             <View style={[
                 styles.p12, styles.rounded,
                 variant === 'primary' ? styles.btnPrimary

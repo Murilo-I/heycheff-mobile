@@ -6,7 +6,9 @@ import { userId } from "@/storage/userId";
 import { Button } from "../button";
 import { styles } from "@/styles/global";
 
-export const FollowButton = () => {
+type Props = { disabled?: boolean };
+
+export const FollowButton = ({ disabled }: Props) => {
     const { thirdPartyId, isFollowing, setFollowingIds } = useContext(ProfileContext);
 
     const follow = () => {
@@ -19,10 +21,10 @@ export const FollowButton = () => {
     }
 
     return (
-        <Button onPress={follow} style={styles.wFull}
+        <Button onPress={follow} style={styles.wFull} containerStyle={styles.wFull} disabled={disabled}
             variant={isFollowing ? "secondary" : "primary"}>
             <Button.Title>
-                {isFollowing ? "Desseguir" : "Seguir"}
+                {isFollowing ? "Deixar de Seguir" : "Seguir"}
             </Button.Title>
         </Button>
     );
