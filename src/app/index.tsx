@@ -23,7 +23,10 @@ export default function Index() {
         if (!isLoaded) return;
 
         if (isSignedIn) {
-            let routes = nav.getState().routes;
+            const navState = nav.getState();
+            if (navState) {
+                let routes = navState.routes;
+            }
             dispatch(setNavIndex(tabs.PERFIL));
             router.replace('/screen/user');
         }

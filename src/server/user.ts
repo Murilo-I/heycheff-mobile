@@ -6,7 +6,7 @@ export type UserInfo = {
     followers: number,
     followersIds: [],
     following: number,
-    receiptsCount: number
+    recipesCount: number
 }
 
 export type FollowResponse = {

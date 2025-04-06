@@ -30,6 +30,7 @@ export default function User(thirdPartyId?: string) {
     const [option, setOption] = useState<"posts" | "config">("posts");
     const [followingIds, setFollowingIds] = useState<FollowResponse>({ following: [] });
     const [isFollowing, setIsFollowing] = useState(false);
+    const [isDisabledFollowButton, setIsDisabledFollowButton] = useState(true);
 
     const userProfile = useAppSelector(state => state.profile);
     const dispatch = useAppDispatch();
@@ -97,30 +98,31 @@ export default function User(thirdPartyId?: string) {
         setIsFirstLoad(true);
         const hasFollowed = followingIds.following.length;
         const checkIfFollowing = async () => {
-            if (hasFollowed) {
-                return followingIds.following
-                    .filter(fid => fid === thirdPartyId).length > 0;
-            } else if (userProfile.info) {
+            if (hasFollowed) return followingIds.following
+                .some(fid => fid === thirdPartyId);
+            if (userProfile.info) {
+                const inf = thirdPartyId ? await userServer.findById(thirdPartyId) : userProfile.info;
                 const uid = await userId.get();
-                return userProfile.info.followersIds
-                    .filter(fid => fid === uid).length > 0;
-            } else {
-                return isFollowing;
+                return inf.followersIds.some(fid => fid === uid);
             }
+            return isFollowing;
         }
         const setUserProfile = async () => {
-            if (thirdPartyId) {
-                const isOwnProfile = thirdPartyId === await userId.get();
-                fetchUserProfile().then(
-                    () => checkIfFollowing().then(setIsFollowing));
+            if (!thirdPartyId) return;
 
-                if (!hasFollowed || isOwnProfile) {
-                    dispatch(resetContent());
-                    fetchUserContent();
-                }
-                if (isOwnProfile) {
-                    dispatch(reset3PartyProfile());
-                }
+            const isOwnProfile = thirdPartyId === await userId.get();
+
+            if (!hasFollowed || isOwnProfile) {
+                dispatch(resetContent());
+                fetchUserContent();
+            }
+            fetchUserProfile().then(() => checkIfFollowing().then(res => {
+                setIsFollowing(res);
+                setIsDisabledFollowButton(false);
+            }));
+
+            if (isOwnProfile) {
+                dispatch(reset3PartyProfile());
             }
         }
         setUserProfile().then(() => setIsFirstLoad(false));
@@ -163,7 +165,7 @@ export default function User(thirdPartyId?: string) {
                         </Text>
                         <Text style={styles.borderLeft} />
                         <Text style={styles.fontRegular}>
-                            {'Posts: ' + userProfile.info.receiptsCount}
+                            {'Posts: ' + userProfile.info.recipesCount}
                         </Text>
                     </View>
                     <View style={[styles.flexRow, styles.flexContent, styles.wFull]}>
@@ -172,7 +174,7 @@ export default function User(thirdPartyId?: string) {
                             followingIds, setFollowingIds,
                             isFollowing, isPosts
                         }}>
-                            {thirdPartyId ? <FollowButton /> : <UserMenu />}
+                            {thirdPartyId ? <FollowButton disabled={isDisabledFollowButton} /> : <UserMenu />}
                         </ProfileContext.Provider>
                     </View>
                     {isPosts ? <Posts /> : <Config />}

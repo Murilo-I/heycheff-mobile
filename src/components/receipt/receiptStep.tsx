@@ -51,7 +51,6 @@ export const ReceiptStep = ({ steps, showModal, onClose }: ReceiptStepProps) => 
     }, [currentIndex]);
 
     useEffect(() => {
-        console.log(transcript);
         if (transcript.includes("Hey chefe")) {
             if (transcript.includes("próximo passo")) nextStep();
             else if (transcript.includes("voltar")) prevStep();
