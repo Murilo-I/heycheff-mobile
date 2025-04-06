@@ -13,7 +13,9 @@ export const ReceiptCard = ({ receipt }: { receipt: ReceiptFeed }) => {
 
     return (
         <>
-            <Pressable onPress={() => setShowModal(true)}>
+            <Pressable onPress={() => {
+                setShowModal(true);
+            }}>
                 <Card>
                     <Card.Img src={receipt.thumb} />
                     <Card.Content>
@@ -36,7 +38,9 @@ export const ReceiptCard = ({ receipt }: { receipt: ReceiptFeed }) => {
                     </Card.Content>
                 </Card>
             </Pressable>
-            <ReceiptDetails receipt={receipt} showModal={showModal} onClose={setShowModal} />
+            {showModal &&
+                <ReceiptDetails receipt={receipt} showModal={showModal} onClose={setShowModal} />
+            }
         </>
     );
 }

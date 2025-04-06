@@ -109,7 +109,9 @@ export default function User(thirdPartyId?: string) {
         }
         const setUserProfile = async () => {
             if (!thirdPartyId) return;
+
             const isOwnProfile = thirdPartyId === await userId.get();
+
             if (!hasFollowed || isOwnProfile) {
                 dispatch(resetContent());
                 fetchUserContent();
@@ -118,6 +120,7 @@ export default function User(thirdPartyId?: string) {
                 setIsFollowing(res);
                 setIsDisabledFollowButton(false);
             }));
+
             if (isOwnProfile) {
                 dispatch(reset3PartyProfile());
             }
@@ -162,7 +165,7 @@ export default function User(thirdPartyId?: string) {
                         </Text>
                         <Text style={styles.borderLeft} />
                         <Text style={styles.fontRegular}>
-                            {'Posts: ' + userProfile.info.receiptsCount}
+                            {'Posts: ' + userProfile.info.recipesCount}
                         </Text>
                     </View>
                     <View style={[styles.flexRow, styles.flexContent, styles.wFull]}>
