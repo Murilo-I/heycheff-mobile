@@ -1,14 +1,4 @@
-import { NetworkInfo } from "react-native-network-info";
-
-const netInfo = async () => {
-    return await NetworkInfo.getIPAddress()
-        .then(ipAddress => {
-            console.log(ipAddress);
-            return ipAddress;
-        });
-}
-
-const NGROK_SERVER = 'https://596d-177-45-191-118.ngrok-free.app';
+const NGROK_SERVER = 'https://0001-2804-7f0-bc02-99ca-d990-4520-718c-a655.ngrok-free.app';
 const URL_DEV = `${NGROK_SERVER}/heycheff`;
 const URL_MEDIA_DEV = NGROK_SERVER;
 

@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native"
+import { StyleSheet } from "react-native";
 
 import { colors } from "./colors";
 import { fontFamily } from "./fontFamily";
@@ -87,6 +87,14 @@ export const styles = StyleSheet.create({
         position: 'absolute'
     },
 
+    transparent: {
+        opacity: .7
+    },
+
+    z1: {
+        zIndex: 1
+    },
+
     card: {
         flex: 1,
         margin: 8,
@@ -137,8 +145,6 @@ export const styles = StyleSheet.create({
         height: 124,
         width: '33%',
         maxWidth: 124,
-        borderWidth: 1,
-        borderColor: '#AAA',
         marginHorizontal: 1
     },
 
@@ -178,6 +184,10 @@ export const styles = StyleSheet.create({
         textAlign: 'center'
     },
 
+    textJustify: {
+        textAlign: 'justify'
+    },
+
     textSmall: {
         fontSize: 12
     },
@@ -203,8 +213,15 @@ export const styles = StyleSheet.create({
     },
 
     btnSecondary: {
-        backgroundColor: colors.yellowOrange[10],
+        backgroundColor: 'transparent',
         borderColor: colors.rose[200],
+        borderStyle: 'solid',
+        borderWidth: 2
+    },
+
+    btnTertiary: {
+        backgroundColor: colors.yellowOrange[10],
+        borderColor: 'black',
         borderStyle: 'solid',
         borderWidth: 2
     },
@@ -248,12 +265,20 @@ export const styles = StyleSheet.create({
         marginTop: 8
     },
 
+    mt16: {
+        marginTop: 16
+    },
+
     mt48: {
         marginTop: 48
     },
 
     mx8: {
         marginHorizontal: 8
+    },
+
+    my16: {
+        marginVertical: 16
     },
 
     p4: {

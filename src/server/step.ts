@@ -5,4 +5,5 @@ export type Step = {
     stepNumber: number
     produtos: Product[]
     modoPreparo: string
+    timeMinutes: number
 }

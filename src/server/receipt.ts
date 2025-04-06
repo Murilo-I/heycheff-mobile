@@ -15,7 +15,7 @@ export type ReceiptFeed = {
     estimatedTime: number
 }
 
-type ReceiptModal = {
+export type ReceiptModal = {
     userId: string,
     steps: Step[]
 }

@@ -1,4 +1,4 @@
-import { useOAuth } from '@clerk/clerk-expo';
+import { useAuth, useOAuth } from '@clerk/clerk-expo';
 import * as Linking from 'expo-linking';
 import { router } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
@@ -8,6 +8,8 @@ import Animated, { FadeInDown, FadeInLeft, FadeInRight, FadeInUp } from 'react-n
 
 import { BackgroundImage } from '@/components/backgroundImage';
 import { Button } from '@/components/button';
+import { useAppDispatch } from '@/redux/hooks';
+import { setNavIndex, tabs } from '@/redux/nav/navigationSlice';
 import { styles } from '@/styles/global';
 import { loginStyles } from '@/styles/login';
 
@@ -17,12 +19,20 @@ export default function FormLogin() {
     const fadeInDown = (delay: number) => FadeInDown.delay(delay).duration(800).springify();
     const [isLoading, setIsLoading] = useState(false);
     const googleOAuth = useOAuth({ strategy: 'oauth_google' });
+    const { isSignedIn } = useAuth();
+    const dispatch = useAppDispatch();
 
     async function onGoogleSignIn() {
         try {
+            if (isSignedIn) {
+                dispatch(setNavIndex(tabs.PERFIL));
+                router.replace('/screen/user');
+            }
+
             setIsLoading(true);
             const redirectUrl = Linking.createURL('/');
             const oAuth = await googleOAuth.startOAuthFlow({ redirectUrl });
+
             if (oAuth.authSessionResult?.type === 'success') {
                 if (oAuth.setActive) {
                     const session = oAuth.createdSessionId

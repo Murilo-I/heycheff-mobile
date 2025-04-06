@@ -1,28 +1,36 @@
 import { useAuth, useUser } from "@clerk/clerk-expo";
-import { useEffect, useState } from "react";
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Image, Pressable, Text, View } from "react-native";
 
 import { Button } from "@/components/button";
 import { Loading } from "@/components/loading";
+import { FollowButton } from "@/components/user/followButton";
+import { UserMenu } from "@/components/user/menu";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { addContent, increasePage, setInfo } from "@/redux/user/profileSlice";
+import { ProfileContext } from "@/redux/user/profileContext";
+import { addContent, resetContent, setInfo } from "@/redux/user/profileSlice";
+import { reset3PartyProfile, set3PartyProfileId } from "@/redux/user/thirdPartySlice";
 import { authServer } from "@/server/auth";
 import { receiptServer } from "@/server/receipt";
-import { userServer } from "@/server/user";
+import { FollowResponse, userServer } from "@/server/user";
 import { jwtStorage } from "@/storage/jwt";
 import { userId } from "@/storage/userId";
 import { styles } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
-import Config, { logout } from "./config";
+import { router } from "expo-router";
+import Config from "./config";
 import Posts from "./posts";
 
-export default function User(id?: string) {
+export default function User(thirdPartyId?: string) {
     const { user } = useUser();
     const { sessionId } = useAuth();
 
     const [authStatus, setAuthStatus] = useState<number | void>();
-    const [isLoading, setIsLoading] = useState(true);
+    const [isFirstLoad, setIsFirstLoad] = useState(true);
     const [option, setOption] = useState<"posts" | "config">("posts");
+    const [followingIds, setFollowingIds] = useState<FollowResponse>({ following: [] });
+    const [isFollowing, setIsFollowing] = useState(false);
+    const [isDisabledFollowButton, setIsDisabledFollowButton] = useState(true);
 
     const userProfile = useAppSelector(state => state.profile);
     const dispatch = useAppDispatch();
@@ -45,7 +53,7 @@ export default function User(id?: string) {
     }
 
     const fetchUserProfile = async () => {
-        const uid = id ? id : await userId.get();
+        const uid = thirdPartyId ? thirdPartyId : await userId.get();
         if (uid) {
             const userInfo = await userServer.findById(uid);
             dispatch(setInfo(userInfo));
@@ -53,20 +61,15 @@ export default function User(id?: string) {
     }
 
     const fetchUserContent = async () => {
-        const uid = userId.get().then(id => {
-            if (id) {
-                return id;
-            } else {
-                return undefined;
-            }
-        });
-
-        receiptServer.loadFeed(userProfile.contentPage, pageSize, await uid)
+        const uid = thirdPartyId ? thirdPartyId : await userId.get();
+        receiptServer.loadFeed(userProfile.contentPage, pageSize, uid)
             .then(feedResponse => {
                 dispatch(addContent(feedResponse.data.items));
-                dispatch(increasePage());
-                dispatch(increasePage());
             }).catch(error => console.log(error));
+    }
+
+    async function goBack() {
+        dispatch(set3PartyProfileId(await userId.get()));
     }
 
     useEffect(() => {
@@ -87,24 +90,68 @@ export default function User(id?: string) {
             if (userProfile.content.length === 0) {
                 fetchUserContent();
             }
-            setIsLoading(false);
+            setIsFirstLoad(false);
         });
     }, []);
 
-    if (isLoading) {
-        return <Loading />
-    }
+    useEffect(() => {
+        setIsFirstLoad(true);
+        const hasFollowed = followingIds.following.length;
+        const checkIfFollowing = async () => {
+            if (hasFollowed) return followingIds.following
+                .some(fid => fid === thirdPartyId);
+            if (userProfile.info) {
+                const inf = thirdPartyId ? await userServer.findById(thirdPartyId) : userProfile.info;
+                const uid = await userId.get();
+                return inf.followersIds.some(fid => fid === uid);
+            }
+            return isFollowing;
+        }
+        const setUserProfile = async () => {
+            if (!thirdPartyId) return;
+
+            const isOwnProfile = thirdPartyId === await userId.get();
+
+            if (!hasFollowed || isOwnProfile) {
+                dispatch(resetContent());
+                fetchUserContent();
+            }
+            fetchUserProfile().then(() => checkIfFollowing().then(res => {
+                setIsFollowing(res);
+                setIsDisabledFollowButton(false);
+            }));
+
+            if (isOwnProfile) {
+                dispatch(reset3PartyProfile());
+            }
+        }
+        setUserProfile().then(() => setIsFirstLoad(false));
+    }, [thirdPartyId, followingIds]);
+
+    if (isFirstLoad) return <Loading />
 
     return authStatus === 200 ? (
         <View style={[
             styles.flexColumn, styles.alignCenter,
             styles.mt48, styles.mx8, styles.gap16
         ]}>
-            <Image source={{ uri: user?.imageUrl }}
-                style={[styles.h100, styles.w100, styles.roundedPlus]} />
-            {userProfile.info ? (
+            {(userProfile.info && !isFirstLoad) ? (
                 <>
-                    <Text style={styles.fontRegular}>{userProfile.info.username}</Text>
+                    {
+                        thirdPartyId ? (
+                            <>
+                                <Pressable onPress={goBack}
+                                    style={[styles.absolute, { left: 0 }]}>
+                                    <Ionicons name="arrow-back-circle-outline" size={30} />
+                                </Pressable>
+                                <Ionicons name="person-circle-sharp" size={100} />
+                            </>
+                        ) : <Image source={{ uri: user?.imageUrl }}
+                            style={[styles.h100, styles.w100, styles.roundedPlus]} />
+                    }
+                    <Text style={styles.fontRegular}>
+                        {userProfile.info.username}
+                    </Text>
                     <View style={[
                         styles.flexRow, styles.justifyEvenly, styles.mt8,
                         styles.flexContent, styles.wFull
@@ -118,26 +165,17 @@ export default function User(id?: string) {
                         </Text>
                         <Text style={styles.borderLeft} />
                         <Text style={styles.fontRegular}>
-                            {'Posts: ' + userProfile.info.receiptsCount}
+                            {'Posts: ' + userProfile.info.recipesCount}
                         </Text>
                     </View>
-                    <View style={[
-                        styles.flexRow, styles.flexContent, styles.wFull
-                    ]}>
-                        <TouchableOpacity style={[
-                            styles.flexHalf, styles.p8, styles.alignCenter,
-                            isPosts ? styles.bgLightYellow : null
-                        ]}
-                            onPress={() => setOption("posts")}>
-                            <Ionicons name={isPosts ? 'apps' : 'apps-outline'} size={20} />
-                        </TouchableOpacity>
-                        <TouchableOpacity style={[
-                            styles.flexHalf, styles.p8, styles.alignCenter,
-                            isPosts ? null : styles.bgLightYellow
-                        ]}
-                            onPress={() => setOption("config")}>
-                            <Ionicons name={isPosts ? 'settings-outline' : 'settings'} size={20} />
-                        </TouchableOpacity>
+                    <View style={[styles.flexRow, styles.flexContent, styles.wFull]}>
+                        <ProfileContext.Provider value={{
+                            thirdPartyId, option, setOption,
+                            followingIds, setFollowingIds,
+                            isFollowing, isPosts
+                        }}>
+                            {thirdPartyId ? <FollowButton disabled={isDisabledFollowButton} /> : <UserMenu />}
+                        </ProfileContext.Provider>
                     </View>
                     {isPosts ? <Posts /> : <Config />}
                 </>
@@ -148,7 +186,7 @@ export default function User(id?: string) {
             <Text style={styles.fontRegular}>
                 Nenhum usuário localizado
             </Text>
-            <Button btnStyle={styles.w100} onPress={() => logout('/start/login')}>
+            <Button btnStyle={styles.w100} onPress={() => router.replace('/start/login')}>
                 <Button.Title>Login</Button.Title>
             </Button>
         </View>

@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from "react";
+import { createContext, useContext } from "react";
 import { Pressable, PressableProps, StyleProp, Text, TextProps, View, ViewStyle } from "react-native";
 
 import { styles } from "@/styles/global";
@@ -12,6 +12,7 @@ type ButtonProps = PressableProps & {
     variant?: Variants
     isLoading?: boolean
     btnStyle?: StyleProp<ViewStyle>
+    containerStyle?: StyleProp<ViewStyle>
 }
 
 const ThemeContext = createContext<{ variant?: Variants }>({});
@@ -21,35 +22,28 @@ function Button({
     icon,
     isLoading,
     btnStyle,
+    disabled,
     children,
+    containerStyle,
     ...rest
 }: ButtonProps) {
-    let iconColor;
-
-    switch (variant) {
-        case 'primary':
-            iconColor = 'white';
-            break;
-
-        case 'secondary':
-            iconColor = '#F44646';
-            break;
-
-        default:
-            iconColor = 'black';
-            break;
-    }
+    const colors: Record<Variants, string> = {
+        primary: "white",
+        secondary: "#F44646",
+        tertiary: "black"
+    };
+    const iconColor = colors[variant];
 
     return (
-        <View>
+        <View style={[containerStyle, disabled ? { opacity: .8 } : {}]}>
             <View style={[
                 styles.p12, styles.rounded,
-                variant === 'primary'
-                    ? styles.btnPrimary
-                    : styles.btnSecondary
+                variant === 'primary' ? styles.btnPrimary
+                    : variant === 'secondary' ? styles.btnSecondary
+                        : styles.btnTertiary
             ]}>
                 <Pressable
-                    disabled={isLoading}
+                    disabled={isLoading || disabled}
                     style={[styles.flexRow, styles.justifyCenter, styles.gap8, btnStyle]}
                     {...rest}
                 >
