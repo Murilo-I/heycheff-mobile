@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { FlatList, NativeScrollEvent, Text, View } from "react-native";
 
 import { Loading } from "@/components/loading";
-import { ReceiptCard } from "@/components/receipt/receiptCard";
+import { ReceiptCard } from "@/components/recipe/receiptCard";
 import { ReceiptFeed, receiptServer } from "@/server/receipt";
 import { styles } from "@/styles/global";
 

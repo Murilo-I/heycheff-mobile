@@ -1,19 +1,34 @@
+import { useAuth } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 
 import { Card } from "@/components/card";
 import Tag from "@/components/tag";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { setRecipeId } from "@/redux/recipe/redirect";
 import { ReceiptFeed } from "@/server/receipt";
 import { styles } from "@/styles/global";
 import { ReceiptDetails } from "./receiptDetails";
 
 export const ReceiptCard = ({ receipt }: { receipt: ReceiptFeed }) => {
     const [showModal, setShowModal] = useState(false);
+    const { isSignedIn } = useAuth();
+
+    const redirectRecipe = useAppSelector(state => state.redirectRecipe);
+    const dispatch = useAppDispatch();
+
+    useEffect(() => {
+        if (redirectRecipe.recipeId === receipt.id) {
+            setShowModal(true);
+        }
+    }, []);
 
     return (
         <>
             <Pressable onPress={() => {
+                if (!isSignedIn)
+                    dispatch(setRecipeId(receipt.id));
                 setShowModal(true);
             }}>
                 <Card>
