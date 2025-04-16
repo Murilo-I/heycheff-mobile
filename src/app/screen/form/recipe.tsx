@@ -1,27 +1,38 @@
 import { ImageManipulator, SaveFormat } from "expo-image-manipulator";
 import * as ImagePicker from "expo-image-picker";
-import { useState } from "react";
-import { Alert, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { useEffect, useState } from "react";
+import { Alert, Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { MultiSelect } from "react-native-element-dropdown";
 
 import { Loading } from "@/components/loading";
 import { clarifai } from "@/server/clarifai";
+import { tagServer } from "@/server/tag";
 import { formsStyles } from "@/styles/forms";
 import { styles } from "@/styles/global";
 
-type Items = {
+type RecognizedItem = {
     name: string,
     percentage: string
 }
 
-type Concept = {
+type ImageConcept = {
     name: string,
     value: number
 }
 
-export default function ReceiptForm() {
+type TagItem = {
+    label: string,
+    value: string
+}
+
+export default function RecipeForm() {
     const [selectedImageUri, setSelectedImageUri] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [items, setItems] = useState<Items[]>([]);
+    const [imgItems, setImgItems] = useState<RecognizedItem[]>([]);
+
+    const [tags, setTags] = useState<TagItem[]>([]);
+    const [selectedTags, setSelectedTags] = useState<string[]>([]);
+    const [recipeTitle, setRecipeTitle] = useState('');
 
     async function handleThumbnail() {
         try {
@@ -80,16 +91,27 @@ export default function ReceiptForm() {
             ]
         });
 
-        const concepts = response.data.outputs[0].data.concepts.map((concept: Concept) => {
+        const concepts = response.data.outputs[0].data.concepts.map((concept: ImageConcept) => {
             return {
                 name: concept.name,
                 percentage: `${Math.round(concept.value * 100)}%`
             }
         });
 
-        setItems(concepts);
+        setImgItems(concepts);
         setIsLoading(false);
     }
+
+    useEffect(() => {
+        const loadTags = async () => {
+            tagServer.findAll().then(tags => tags.map(tag => ({
+                "label": tag.tag,
+                "value": tag.id.toString()
+            })
+            )).then(setTags);
+        }
+        loadTags();
+    }, []);
 
     return (
         <View style={styles.flex1}>
@@ -111,19 +133,20 @@ export default function ReceiptForm() {
             <View style={[formsStyles.bottomContainer, styles.bgYellowWhite]}>
                 <ScrollView showsVerticalScrollIndicator={false}
                     contentContainerStyle={{ paddingBottom: 12, marginVertical: 6 }}>
-                    {
-                        isLoading ?
-                            <Loading />
-                            :
-                            items.map(item => (
-                                <Text key={item.name} style={[
-                                    styles.fontRegular, styles.p12, styles.rounded,
-                                    styles.bgLightYellow, formsStyles.itemBox
-                                ]}>
-                                    {item.percentage} - {item.name}
-                                </Text>
-                            ))
-                    }
+                    <View style={styles.flexInitial}>
+                        <TextInput style={[styles.wFull, styles.fontRegular, styles.p12, styles.rounded]}
+                            placeholder="Título da Receita" value={recipeTitle} onChangeText={setRecipeTitle} />
+                        <MultiSelect
+                            labelField="label"
+                            valueField="value"
+                            placeholder="Selecione uma ou mais categorias"
+                            searchPlaceholder="Pesquisar..."
+                            search
+                            data={tags}
+                            value={selectedTags}
+                            onChange={setSelectedTags}
+                        />
+                    </View>
                 </ScrollView>
             </View>
         </View>

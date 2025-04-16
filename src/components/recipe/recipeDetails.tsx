@@ -7,21 +7,21 @@ import { Modal } from "@/components/modal";
 import { useAppDispatch } from "@/redux/hooks";
 import { setNavIndex, tabs } from "@/redux/nav/navigationSlice";
 import { set3PartyProfileId } from "@/redux/user/thirdPartySlice";
-import { ReceiptFeed, ReceiptModal, receiptServer } from "@/server/receipt";
+import { RecipeFeed, RecipeModal, recipeServer } from "@/server/recipe";
 import { Step } from "@/server/step";
 import { UserInfo, userServer } from "@/server/user";
 import { styles } from "@/styles/global";
 import { API_URL_MEDIA } from "@/util/endpoints";
-import { ReceiptStep } from "./receiptStep";
+import { RecipeStep } from "./recipeStep";
 
-type ReceiptDetailsProps = {
-    receipt: ReceiptFeed,
+type RecipeDetailsProps = {
+    recipe: RecipeFeed,
     showModal: boolean,
     onClose: Dispatch<SetStateAction<boolean>>
 }
 
-export const ReceiptDetails = ({ receipt, showModal, onClose }: ReceiptDetailsProps) => {
-    const [receiptModal, setReceiptModal] = useState<ReceiptModal>();
+export const RecipeDetails = ({ recipe, showModal, onClose }: RecipeDetailsProps) => {
+    const [recipeModal, setRecipeModal] = useState<RecipeModal>();
     const [owner, setOwner] = useState<UserInfo>();
     const [showStepModal, setShowStepModal] = useState(false);
     const dispatch = useAppDispatch();
@@ -40,7 +40,7 @@ export const ReceiptDetails = ({ receipt, showModal, onClose }: ReceiptDetailsPr
     }
 
     function show3PartyProfile() {
-        dispatch(set3PartyProfileId(receiptModal?.userId));
+        dispatch(set3PartyProfileId(recipeModal?.userId));
         dispatch(setNavIndex(tabs.PERFIL));
         router.navigate('/screen/user');
         onClose(false);
@@ -51,8 +51,8 @@ export const ReceiptDetails = ({ receipt, showModal, onClose }: ReceiptDetailsPr
             userServer.findById(userId).then(setOwner);
         }
         const fetchModal = async () => {
-            receiptServer.loadModal(receipt.id).then(resp => {
-                setReceiptModal(resp.data);
+            recipeServer.loadModal(recipe.id).then(resp => {
+                setRecipeModal(resp.data);
                 fetchOwner(resp.data.userId);
             });
         }
@@ -61,22 +61,22 @@ export const ReceiptDetails = ({ receipt, showModal, onClose }: ReceiptDetailsPr
     }, []);
 
     return (
-        <Modal title={receipt.titulo} visible={showModal} onClose={() => onClose(false)}>
+        <Modal title={recipe.titulo} visible={showModal} onClose={() => onClose(false)}>
             <Pressable style={styles.flexCenter} onPress={() => setShowStepModal(true)}>
                 <Ionicons name="play-circle-outline" size={40}
                     color="white" style={[styles.absolute, styles.z1]} />
-                <Image source={{ uri: API_URL_MEDIA + receipt.thumb }}
+                <Image source={{ uri: API_URL_MEDIA + recipe.thumb }}
                     style={[styles.flex1, styles.rounded]} />
             </Pressable>
             {
-                receiptModal && <ReceiptStep steps={receiptModal.steps}
+                recipeModal && <RecipeStep steps={recipeModal.steps}
                     showModal={showStepModal} onClose={setShowStepModal} />
             }
             <View style={[styles.flexRow, styles.contentBetween, styles.my16]}>
                 <View style={[styles.flexInitial, styles.flexRow, { flex: .3 }]}>
                     <Ionicons name="timer" size={20} color="#AAA" />
                     <Text style={[styles.fontRegular, styles.textGray]}>
-                        {receipt.estimatedTime}
+                        {recipe.estimatedTime}
                     </Text>
                     <Text style={[styles.fontRegular, styles.textGray]}>
                         min.
@@ -98,7 +98,7 @@ export const ReceiptDetails = ({ receipt, showModal, onClose }: ReceiptDetailsPr
                     Ingredientes
                 </Text>
                 <SectionList
-                    sections={formatData(receiptModal?.steps)}
+                    sections={formatData(recipeModal?.steps)}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => (
                         <View style={styles.m8}>

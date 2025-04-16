@@ -6,7 +6,7 @@ import { setNavIndex } from "@/redux/nav/navigationSlice";
 import { colors } from "@/styles/colors";
 import { styles } from "@/styles/global";
 import Feed from "./feed";
-import ReceiptForm from "./form/receipt";
+import RecipeForm from "./form/recipe";
 import News from "./news";
 import Search from "./search";
 import User from "./user";
@@ -27,7 +27,7 @@ export default function Layout() {
     const renderScene = BottomNavigation.SceneMap({
         news: News,
         feed: Feed,
-        plus: ReceiptForm,
+        plus: RecipeForm,
         search: Search,
         user: Perfil
     });

@@ -2,28 +2,28 @@ import { useEffect, useState } from "react";
 import { FlatList, NativeScrollEvent, Text, View } from "react-native";
 
 import { Loading } from "@/components/loading";
-import { ReceiptCard } from "@/components/recipe/receiptCard";
-import { ReceiptFeed, receiptServer } from "@/server/receipt";
+import { RecipeCard } from "@/components/recipe/recipeCard";
+import { RecipeFeed, recipeServer } from "@/server/recipe";
 import { styles } from "@/styles/global";
 
 export default function Feed() {
-    const [receipts, setReceipts] = useState<ReceiptFeed[]>([]);
-    const [totalReceipts, setTotalReceipts] = useState(0);
+    const [recipes, setRecipes] = useState<RecipeFeed[]>([]);
+    const [totalRecipes, setTotalRecipes] = useState(0);
     const [pageNum, setPageNum] = useState(0);
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
 
     const pageSize = 4;
 
-    async function loadReceipt() {
-        return receiptServer.loadFeed(pageNum, pageSize)
+    async function loadRecipe() {
+        return recipeServer.loadFeed(pageNum, pageSize)
             .then(feedResponse => {
-                if (totalReceipts === 0) {
-                    setTotalReceipts(feedResponse.data.count);
+                if (totalRecipes === 0) {
+                    setTotalRecipes(feedResponse.data.count);
                 } else {
-                    setHasMore(receipts.length < totalReceipts);
+                    setHasMore(recipes.length < totalRecipes);
                 }
-                setReceipts([...receipts, ...feedResponse.data.items]);
+                setRecipes([...recipes, ...feedResponse.data.items]);
                 setPageNum(pageNum + 1);
             }).catch(error => console.log(error));
     }
@@ -39,26 +39,26 @@ export default function Feed() {
 
         if (hitTheBottom && hasMore) {
             setLoading(true);
-            loadReceipt().then(() => setLoading(false));
+            loadRecipe().then(() => setLoading(false));
         }
     }
 
     useEffect(() => {
-        const fetchReceipt = async () => loadReceipt();
-        fetchReceipt();
+        const fetchRecipe = async () => loadRecipe();
+        fetchRecipe();
     }, []);
 
-    return receipts.length ? (
+    return recipes.length ? (
         <View style={{ flex: 1, marginTop: 48 }}>
             <FlatList
-                data={receipts}
-                renderItem={({ item }) => <ReceiptCard receipt={item} />}
+                data={recipes}
+                renderItem={({ item }) => <RecipeCard recipe={item} />}
                 onScroll={({ nativeEvent }) => {
                     if (!loading) loadMore(nativeEvent);
                 }}
                 windowSize={7}
                 scrollEventThrottle={200}
-                keyExtractor={receipt => receipt.id.toString()}
+                keyExtractor={recipe => recipe.id.toString()}
                 ListFooterComponent={loading ? <Loading /> : null}
             />
             {!hasMore ?

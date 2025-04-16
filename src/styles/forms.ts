@@ -16,4 +16,6 @@ export const formsStyles = StyleSheet.create({
         shadowColor: '#171717',
         marginBottom: 12
     }
+
+    
 });

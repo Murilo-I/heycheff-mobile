@@ -18,11 +18,11 @@ export const navigationSlice = createSlice({
 
 const NEWS = 0;
 const FEED = 1;
-const RECEIPT_FORM = 2;
+const RECIPE_FORM = 2;
 const SEARCH = 3;
 const PERFIL = 4;
 
-export const tabs = { NEWS, FEED, RECEIPT_FORM, SEARCH, PERFIL }
+export const tabs = { NEWS, FEED, RECIPE_FORM, SEARCH, PERFIL }
 export const { setNavIndex } = navigationSlice.actions;
 export const navigation = (state: RootState) => state.navigation;
 export default navigationSlice.reducer;
