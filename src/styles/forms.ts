@@ -15,7 +15,12 @@ export const formsStyles = StyleSheet.create({
         elevation: 2,
         shadowColor: '#171717',
         marginBottom: 12
-    }
+    },
 
-    
+    dropdown: {
+        height: 48,
+        backgroundColor: 'transparent',
+        borderBottomColor: 'gray',
+        borderBottomWidth: .5
+    }
 });
