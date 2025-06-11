@@ -14,18 +14,32 @@ api.interceptors.request.use(async config => {
     return config;
 });
 
-api.interceptors.response.use((response) => response, async (error: AxiosError) => {
-    const originalRequest = error.config as AxiosRequestConfig & { _retry403: boolean };
+function delay(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
-    if (error.response?.status === 403) {
-        if (!originalRequest._retry403) {
-            originalRequest._retry403 = true;
-            return api(originalRequest);
+api.interceptors.response.use(
+    (response) => response,
+    async (error: AxiosError) => {
+        const originalRequest = error.config as AxiosRequestConfig & {
+            _retry403Count?: number;
+        };
+
+        if (error.response?.status === 403) {
+            originalRequest._retry403Count = originalRequest._retry403Count || 0;
+
+            if (originalRequest._retry403Count < 5) {
+                originalRequest._retry403Count += 1;
+                await delay(2); // 2 milliseconds
+                return api(originalRequest);
+            }
+
+            router.navigate('/start/login');
         }
-        router.navigate('/start/login');
-    }
 
-    return Promise.reject(error);
-});
+        return Promise.reject(error);
+    }
+);
+
 
 export default api;

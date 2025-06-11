@@ -1,3 +1,4 @@
+import { userId } from "@/storage/userId";
 import api from "./api";
 import { Step } from "./step";
 import { Tag } from "./tag";
@@ -23,7 +24,7 @@ export type RecipeModal = {
 export type RecipeRequest = {
     titulo: string,
     tags: Tag[],
-    thumb: File
+    thumb: Blob
 }
 
 const baseUrl = '/receitas'
@@ -55,6 +56,8 @@ async function save(recipe: RecipeRequest) {
     formData.append('titulo', recipe.titulo);
     formData.append('tags', JSON.stringify(recipe.tags));
     formData.append('thumb', recipe.thumb);
+    const uid = await userId.get();
+    formData.append('userId', uid ? uid : '');
 
     try {
         return await api.post<{ seqId: number }>(baseUrl, formData, {

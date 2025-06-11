@@ -38,8 +38,20 @@ export const RecipeStep = ({ steps, showModal, onClose }: RecipeStepProps) => {
         stopRecognition();
     }
 
+    function isPossibleTriger() {
+        return transcript.includes("Hey chefe")
+            || transcript.includes("Hey chef")
+            || transcript.includes("Rei chefe")
+            || transcript.includes("Rei Jeff")
+            || transcript.includes("Hei chefe")
+            || transcript.includes("Ei Chefe")
+            || transcript.includes("Ei Jeff")
+            || transcript.includes("Ei chef");
+    }
+
     useEffect(() => {
         setActiveStep(steps[currentIndex]);
+        // TODO - alterar para path do video real
         let videoPath = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
 
         if (player === undefined) {
@@ -47,11 +59,11 @@ export const RecipeStep = ({ steps, showModal, onClose }: RecipeStepProps) => {
         } else {
             player.replace(videoPath);
         }
-        clearTranscript
+        clearTranscript;
     }, [currentIndex]);
 
     useEffect(() => {
-        if (transcript.includes("Hey chefe")) {
+        if (isPossibleTriger()) {
             if (transcript.includes("próximo passo")) nextStep();
             else if (transcript.includes("voltar")) prevStep();
             else if (transcript.includes("fechar")) close();
