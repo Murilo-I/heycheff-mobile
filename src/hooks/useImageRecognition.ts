@@ -1,27 +1,24 @@
 import { ImageManipulator, SaveFormat } from "expo-image-manipulator";
 import * as ImagePicker from "expo-image-picker";
 import { useState } from "react";
-import { Alert, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Alert } from "react-native";
 
-import { Loading } from "@/components/loading";
 import { clarifai } from "@/server/clarifai";
-import { formsStyles } from "@/styles/forms";
-import { styles } from "@/styles/global";
 
-type Items = {
+type RecognizedItem = {
     name: string,
     percentage: string
 }
 
-type Concept = {
+type ImageConcept = {
     name: string,
     value: number
 }
 
-export default function ReceiptForm() {
+export const useImageRecognition = () => {
     const [selectedImageUri, setSelectedImageUri] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [items, setItems] = useState<Items[]>([]);
+    const [imgItems, setImgItems] = useState<RecognizedItem[]>([]);
 
     async function handleThumbnail() {
         try {
@@ -80,52 +77,21 @@ export default function ReceiptForm() {
             ]
         });
 
-        const concepts = response.data.outputs[0].data.concepts.map((concept: Concept) => {
+        const concepts = response.data.outputs[0].data.concepts.map((concept: ImageConcept) => {
             return {
                 name: concept.name,
                 percentage: `${Math.round(concept.value * 100)}%`
             }
         });
 
-        setItems(concepts);
+        setImgItems(concepts);
         setIsLoading(false);
     }
 
-    return (
-        <View style={styles.flex1}>
-            {
-                selectedImageUri ?
-                    <TouchableOpacity style={styles.flex1}
-                        onPress={handleThumbnail} disabled={isLoading}>
-                        <Image source={{ uri: selectedImageUri }}
-                            resizeMode="cover" style={styles.flex1} />
-                    </TouchableOpacity>
-                    :
-                    <TouchableOpacity style={[styles.flexCenter]}
-                        onPress={handleThumbnail}>
-                        <Text style={styles.fontRegular}>
-                            Toque para adicionar uma thumb a receita.
-                        </Text>
-                    </TouchableOpacity>
-            }
-            <View style={[formsStyles.bottomContainer, styles.bgYellowWhite]}>
-                <ScrollView showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{ paddingBottom: 12, marginVertical: 6 }}>
-                    {
-                        isLoading ?
-                            <Loading />
-                            :
-                            items.map(item => (
-                                <Text key={item.name} style={[
-                                    styles.fontRegular, styles.p12, styles.rounded,
-                                    styles.bgLightYellow, formsStyles.itemBox
-                                ]}>
-                                    {item.percentage} - {item.name}
-                                </Text>
-                            ))
-                    }
-                </ScrollView>
-            </View>
-        </View>
-    );
+    return {
+        selectedImageUri,
+        isLoading,
+        imgItems,
+        handleThumbnail
+    }
 }

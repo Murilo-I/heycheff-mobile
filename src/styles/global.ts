@@ -192,6 +192,10 @@ export const styles = StyleSheet.create({
         fontSize: 12
     },
 
+    textMedium: {
+        fontSize: 14
+    },
+
     textLarge: {
         fontSize: 24
     },
@@ -226,6 +230,10 @@ export const styles = StyleSheet.create({
         borderWidth: 2
     },
 
+    borded: {
+        borderWidth: 1
+    },
+
     rounded: {
         borderRadius: 10
     },
@@ -255,6 +263,10 @@ export const styles = StyleSheet.create({
 
     m8: {
         margin: 8
+    },
+
+    mr8: {
+        marginRight: 8
     },
 
     mb8: {
@@ -293,8 +305,8 @@ export const styles = StyleSheet.create({
         padding: 12
     },
 
-    h50: {
-        height: 50
+    h40: {
+        height: 40
     },
 
     h100: {

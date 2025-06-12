@@ -11,7 +11,7 @@ import { ProfileContext } from "@/redux/user/profileContext";
 import { addContent, resetContent, setInfo } from "@/redux/user/profileSlice";
 import { reset3PartyProfile, set3PartyProfileId } from "@/redux/user/thirdPartySlice";
 import { authServer } from "@/server/auth";
-import { receiptServer } from "@/server/receipt";
+import { recipeServer } from "@/server/recipe";
 import { FollowResponse, userServer } from "@/server/user";
 import { jwtStorage } from "@/storage/jwt";
 import { userId } from "@/storage/userId";
@@ -62,7 +62,7 @@ export default function User(thirdPartyId?: string) {
 
     const fetchUserContent = async () => {
         const uid = thirdPartyId ? thirdPartyId : await userId.get();
-        receiptServer.loadFeed(userProfile.contentPage, pageSize, uid)
+        recipeServer.loadFeed(userProfile.contentPage, pageSize, uid)
             .then(feedResponse => {
                 dispatch(addContent(feedResponse.data.items));
             }).catch(error => console.log(error));

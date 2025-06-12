@@ -1,12 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { ReceiptFeed } from '@/server/receipt';
+import { RecipeFeed } from '@/server/recipe';
 import { UserInfo } from "@/server/user";
 import { RootState } from "../store";
 
 export interface UserProfileState {
     info: UserInfo | undefined,
-    content: ReceiptFeed[],
+    content: RecipeFeed[],
     contentPage: number
 }
 
@@ -24,7 +24,7 @@ export const profileSlice = createSlice({
             state.info = action.payload;
         },
 
-        addContent: (state, action: PayloadAction<ReceiptFeed[]>) => {
+        addContent: (state, action: PayloadAction<RecipeFeed[]>) => {
             const contents = [...state.content, ...action.payload];
             const contentsMap = new Map();
             contents.forEach(item => contentsMap.set(item.id, item));

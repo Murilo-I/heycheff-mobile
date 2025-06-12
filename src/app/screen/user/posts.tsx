@@ -4,7 +4,7 @@ import { FlatList, Image, NativeScrollEvent, View } from "react-native";
 import { Loading } from "@/components/loading";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { addContent, increasePage } from "@/redux/user/profileSlice";
-import { ReceiptFeed, receiptServer } from "@/server/receipt";
+import { RecipeFeed, recipeServer } from "@/server/recipe";
 import { userId } from "@/storage/userId";
 import { styles } from "@/styles/global";
 import { API_URL_MEDIA } from "@/util/endpoints";
@@ -12,7 +12,7 @@ import { API_URL_MEDIA } from "@/util/endpoints";
 export default function Posts() {
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
-    const [totalReceipts, setTotalReceipts] = useState(0);
+    const [totalRecipes, setTotalRecipes] = useState(0);
 
     const userProfile = useAppSelector(state => state.profile);
     const dispatch = useAppDispatch();
@@ -32,17 +32,17 @@ export default function Posts() {
             setLoading(true);
             const id = await userId.get();
 
-            if (totalReceipts === 0) {
+            if (totalRecipes === 0) {
                 dispatch(increasePage());
                 dispatch(increasePage());
             }
 
-            receiptServer.loadFeed(userProfile.contentPage, pageSize, id)
+            recipeServer.loadFeed(userProfile.contentPage, pageSize, id)
                 .then(feedResponse => {
-                    if (totalReceipts === 0) {
-                        setTotalReceipts(feedResponse.data.count);
+                    if (totalRecipes === 0) {
+                        setTotalRecipes(feedResponse.data.count);
                     } else {
-                        setHasMore(userProfile.content.length < totalReceipts);
+                        setHasMore(userProfile.content.length < totalRecipes);
                     }
                     dispatch(addContent(feedResponse.data.items));
                     dispatch(increasePage());
@@ -51,7 +51,7 @@ export default function Posts() {
         }
     }
 
-    function handleLayout(data: ReceiptFeed[]) {
+    function handleLayout(data: RecipeFeed[]) {
         const numberOfFullRows = Math.floor(data.length / numColumns);
         let numberOfElementsLastRow = data.length - (numberOfFullRows * numColumns);
         const newData = [...data];
@@ -85,7 +85,7 @@ export default function Posts() {
                     if (!loading) loadMore(nativeEvent);
                 }}
                 scrollEventThrottle={200}
-                keyExtractor={receipt => receipt.id.toString()}
+                keyExtractor={recipe => recipe.id.toString()}
                 ListFooterComponent={loading ? <Loading /> : null}
             />
         </View>
