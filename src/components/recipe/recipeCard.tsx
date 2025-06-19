@@ -54,7 +54,7 @@ export const RecipeCard = ({ recipe }: { recipe: RecipeFeed }) => {
                 </Card>
             </Pressable>
             {showModal &&
-                <RecipeDetails recipe={recipe} showModal={showModal} onClose={setShowModal} />
+                <RecipeDetails recipe={recipe} showModal={showModal} setShowModal={setShowModal} />
             }
         </>
     );

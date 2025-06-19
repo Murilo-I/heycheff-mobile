@@ -1,10 +1,10 @@
-const NGROK_SERVER = 'https://70c3-2804-1b1-fac1-4141-8826-f916-6bd7-b080.ngrok-free.app';
+const NGROK_SERVER = 'https://36d4-2804-1b1-fac3-8dfb-a9c4-7d93-5757-945a.ngrok-free.app';
 const URL_DEV = `${NGROK_SERVER}/heycheff`;
 const URL_MEDIA_DEV = NGROK_SERVER;
 
-const IP_PROD = '179.124.193.12';
-const URL_PROD = `http://${IP_PROD}:6015/heycheff`;
-const URL_MEDIA_PROD = `http://${IP_PROD}:6015`;
+const BASE_URL = 'https://heycheff-api-h5bcceg3c8acgraz.westus-01.azurewebsites.net';
+const URL_PROD = `${BASE_URL}/heycheff`;
+const URL_MEDIA_PROD = `${URL_PROD}/media?path=`;
 
 const isDev = process.env.NODE_ENV === 'development';
 

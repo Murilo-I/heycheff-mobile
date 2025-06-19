@@ -24,10 +24,10 @@ export type RecipeModal = {
 export type RecipeRequest = {
     titulo: string,
     tags: Tag[],
-    thumb: Blob
+    file: {}
 }
 
-const baseUrl = '/receitas'
+export const baseUrl = '/receitas';
 
 async function loadFeed(pageNum: number, pageSize: number, userId?: string) {
     try {
@@ -55,7 +55,7 @@ async function save(recipe: RecipeRequest) {
     const formData = new FormData();
     formData.append('titulo', recipe.titulo);
     formData.append('tags', JSON.stringify(recipe.tags));
-    formData.append('thumb', recipe.thumb);
+    formData.append('thumb', recipe.file as any);
     const uid = await userId.get();
     formData.append('userId', uid ? uid : '');
 
@@ -63,6 +63,9 @@ async function save(recipe: RecipeRequest) {
         return await api.post<{ seqId: number }>(baseUrl, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
+            },
+            transformRequest: (data, headers) => {
+                return data;
             }
         });
     } catch (error) {

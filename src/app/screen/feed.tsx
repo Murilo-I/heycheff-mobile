@@ -56,7 +56,7 @@ export default function Feed() {
                 onScroll={({ nativeEvent }) => {
                     if (!loading) loadMore(nativeEvent);
                 }}
-                windowSize={7}
+                windowSize={5}
                 scrollEventThrottle={200}
                 keyExtractor={recipe => recipe.id.toString()}
                 ListFooterComponent={loading ? <Loading /> : null}

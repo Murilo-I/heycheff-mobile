@@ -30,7 +30,7 @@ api.interceptors.response.use(
 
             if (originalRequest._retry403Count < 5) {
                 originalRequest._retry403Count += 1;
-                await delay(2); // 2 milliseconds
+                await delay(200);
                 return api(originalRequest);
             }
 

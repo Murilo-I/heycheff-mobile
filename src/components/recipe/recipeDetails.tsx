@@ -17,10 +17,10 @@ import { RecipeStep } from "./recipeStep";
 type RecipeDetailsProps = {
     recipe: RecipeFeed,
     showModal: boolean,
-    onClose: Dispatch<SetStateAction<boolean>>
+    setShowModal: Dispatch<SetStateAction<boolean>>
 }
 
-export const RecipeDetails = ({ recipe, showModal, onClose }: RecipeDetailsProps) => {
+export const RecipeDetails = ({ recipe, showModal, setShowModal }: RecipeDetailsProps) => {
     const [recipeModal, setRecipeModal] = useState<RecipeModal>();
     const [owner, setOwner] = useState<UserInfo>();
     const [showStepModal, setShowStepModal] = useState(false);
@@ -43,7 +43,7 @@ export const RecipeDetails = ({ recipe, showModal, onClose }: RecipeDetailsProps
         dispatch(set3PartyProfileId(recipeModal?.userId));
         dispatch(setNavIndex(tabs.PERFIL));
         router.navigate('/screen/user');
-        onClose(false);
+        setShowModal(false);
     }
 
     useEffect(() => {
@@ -61,7 +61,7 @@ export const RecipeDetails = ({ recipe, showModal, onClose }: RecipeDetailsProps
     }, []);
 
     return (
-        <Modal title={recipe.titulo} visible={showModal} onClose={() => onClose(false)}>
+        <Modal title={recipe.titulo} visible={showModal} onClose={() => setShowModal(false)}>
             <Pressable style={styles.flexCenter} onPress={() => setShowStepModal(true)}>
                 <Ionicons name="play-circle-outline" size={40}
                     color="white" style={[styles.absolute, styles.z1]} />

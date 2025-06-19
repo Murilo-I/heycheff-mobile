@@ -273,6 +273,10 @@ export const styles = StyleSheet.create({
         marginBottom: 8
     },
 
+    mb16: {
+        marginBottom: 16
+    },
+
     mt8: {
         marginTop: 8
     },
@@ -293,6 +297,10 @@ export const styles = StyleSheet.create({
         marginVertical: 16
     },
 
+    p2: {
+        padding: 2
+    },
+
     p4: {
         padding: 4
     },
@@ -307,6 +315,10 @@ export const styles = StyleSheet.create({
 
     h40: {
         height: 40
+    },
+
+    h50: {
+        height: 50
     },
 
     h100: {

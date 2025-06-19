@@ -4,12 +4,14 @@ import { Alert, Image, ScrollView, Text, TextInput, TouchableOpacity, View } fro
 import { MultiSelect } from "react-native-element-dropdown";
 
 import { Button } from "@/components/button";
+import { StepCadModal } from "@/components/steps/cadModal";
 import { useImageRecognition } from "@/hooks/useImageRecognition";
 import { recipeServer } from "@/server/recipe";
 import { tagServer } from "@/server/tag";
 import { formsStyles } from "@/styles/forms";
 import { styles } from "@/styles/global";
 import { loginStyles } from "@/styles/login";
+import { DataTable } from "react-native-paper";
 
 type TagItem = {
     label: string,
@@ -24,21 +26,28 @@ export default function RecipeForm() {
     const [recipeTitle, setRecipeTitle] = useState('');
     const [recipeId, setRecipeId] = useState(0);
     const [isPosting, setIsPosting] = useState(false);
+    const [openStepModal, setOpenModal] = useState(false);
 
     async function saveRecipe() {
-        setIsPosting(true);
+        // setIsPosting(true);
         const requestTags = selectedTags.map(selected => {
-            const id = tags.find(tag => tag.label === selected)?.value;
+            const tag = tags.find(tag => tag.value === selected)?.label;
             return {
-                id: Number.parseInt(id ? id : '0'),
-                tag: selected
+                id: Number.parseInt(selected),
+                tag: tag ? tag : ''
             }
         });
-        const thumb = new Blob([selectedImageUri]);
-        const request = { titulo: recipeTitle, tags: requestTags, thumb };
+        const thumb = await fetch(selectedImageUri).then(r => r.blob());
+        const file = {
+            uri: selectedImageUri,
+            name: 'thumb.jpg',
+            type: thumb.type,
+        };
+        console.log('recipe tags: ', requestTags);
+        const request = { titulo: recipeTitle, tags: requestTags, file };
         recipeServer.save(request).then(resp => {
             switch (resp.status) {
-                case 200:
+                case 201:
                     Alert.alert("Receita cadastrada com sucesso!");
                     setRecipeId(resp.data.seqId);
                     break;
@@ -54,7 +63,16 @@ export default function RecipeForm() {
                     setIsPosting(false);
                     break;
             }
-        });
+        })
+            .catch(error => {
+                if (error.response) {
+                    console.log('Backend error response:', error.response.data);
+                } else if (error.request) {
+                    console.log('No response received:', error.request);
+                } else {
+                    console.log('Error setting up request:', error.message);
+                }
+            });
     }
 
     useEffect(() => {
@@ -93,10 +111,13 @@ export default function RecipeForm() {
                             placeholder="Título da Receita" value={recipeTitle} onChangeText={setRecipeTitle}
                             editable={recipeId ? false : true} />
                         <MultiSelect
-                            style={[formsStyles.dropdown, styles.flex1]}
+                            style={
+                                recipeId ? { display: 'none' } : [formsStyles.dropdown, styles.flex1]
+                            }
                             selectedStyle={styles.rounded}
                             selectedTextStyle={[styles.fontRegular, styles.textMedium]}
                             inputSearchStyle={[styles.fontRegular, styles.h40]}
+                            placeholderStyle={styles.fontRegular}
                             labelField="label"
                             valueField="value"
                             placeholder="Selecione uma ou mais categorias"
@@ -116,22 +137,27 @@ export default function RecipeForm() {
                                 <Button.Title>Salvar</Button.Title>
                             </Button>
                             :
-                            <View></View>
+                            <View style={styles.my16}>
+                                <Text style={[styles.fontRegular, styles.textSmall]}>
+                                    Nenhum Step Adicionado
+                                </Text>
+                            </View>
                         }
                     </View>
+                    {recipeId &&
+                        <View style={[loginStyles.menu, styles.my16, styles.h50]}>
+                            <Button icon="add-circle-outline"
+                                onPress={() => setOpenModal(true)} variant="secondary">
+                                <Button.Title>Add Step</Button.Title>
+                            </Button>
+                            <Button btnStyle={styles.p2} icon="cloud-upload">
+                                <Button.Title>Publicar Receita</Button.Title>
+                            </Button>
+                        </View>
+                    }
                 </ScrollView>
-                {recipeId &&
-                    <View style={loginStyles.menu}>
-                        <Button btnStyle={loginStyles.menuItem} icon="add-circle-outline"
-                            variant="secondary">
-                            <Button.Title>Adicionar Step</Button.Title>
-                        </Button>
-                        <Button btnStyle={loginStyles.menuItem} icon="cloud-upload">
-                            <Button.Title>Publicar Receita</Button.Title>
-                        </Button>
-                    </View>
-                }
             </View>
+            <StepCadModal openModal={openStepModal} setOpenModal={setOpenModal} />
         </View>
     );
 }
