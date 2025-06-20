@@ -21,6 +21,6 @@ export const formsStyles = StyleSheet.create({
         height: 48,
         backgroundColor: 'transparent',
         borderBottomColor: 'gray',
-        borderBottomWidth: .5
+        borderBottomWidth: 1
     }
 });

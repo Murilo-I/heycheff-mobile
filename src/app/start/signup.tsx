@@ -5,7 +5,7 @@ import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 import { BackgroundImage } from '@/components/backgroundImage';
 import { Button } from '@/components/button';
 import { styles } from '@/styles/global';
-import { loginStyles } from '@/styles/login';
+import { startStyles } from '@/styles/start';
 import { router } from 'expo-router';
 
 export default function FormSignup() {
@@ -14,14 +14,14 @@ export default function FormSignup() {
     return (
         <View style={[styles.wFull, styles.hfull, styles.bgYellowWhite]}>
             <BackgroundImage />
-            <View style={loginStyles.formSection}>
-                <View style={loginStyles.fieldContainer}>
+            <View style={startStyles.formSection}>
+                <View style={startStyles.fieldContainer}>
                     <Animated.Text entering={FadeInUp.duration(800).springify()}
                         style={[styles.textYellowWhite, styles.fontRegular, styles.textXl, styles.textBold]}>
                         Sign Up
                     </Animated.Text>
                 </View>
-                <View style={loginStyles.fieldContainer}>
+                <View style={startStyles.fieldContainer}>
                     <Animated.View style={styles.wFull} entering={fadeInDown(0)}>
                         <TextInput style={[styles.fontRegular, styles.p12, styles.rounded, styles.bgLightYellow]}
                             placeholder='Username' placeholderTextColor={'#AAA'} />
@@ -40,7 +40,7 @@ export default function FormSignup() {
                         </Button>
                     </Animated.View>
                     <Animated.View entering={fadeInDown(550)}
-                        style={[loginStyles.menu, styles.justifyCenter]}>
+                        style={[startStyles.menu, styles.justifyCenter]}>
                         <Text style={[styles.fontRegular]}>
                             Já possui uma conta?
                             {" "}

@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 
-export const loginStyles = StyleSheet.create({
+export const startStyles = StyleSheet.create({
     formSection: {
         flex: 1,
         width: '90%',

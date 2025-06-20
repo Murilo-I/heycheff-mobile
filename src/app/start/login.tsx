@@ -11,7 +11,7 @@ import { Button } from '@/components/button';
 import { useAppDispatch } from '@/redux/hooks';
 import { setNavIndex, tabs } from '@/redux/nav/navigationSlice';
 import { styles } from '@/styles/global';
-import { loginStyles } from '@/styles/login';
+import { startStyles } from '@/styles/start';
 
 WebBrowser.maybeCompleteAuthSession()
 
@@ -55,14 +55,14 @@ export default function FormLogin() {
     return (
         <View style={[styles.wFull, styles.hfull, styles.bgYellowWhite]}>
             <BackgroundImage />
-            <View style={loginStyles.formSection}>
-                <View style={loginStyles.fieldContainer}>
+            <View style={startStyles.formSection}>
+                <View style={startStyles.fieldContainer}>
                     <Animated.Text entering={FadeInUp.duration(800).springify()}
                         style={[styles.textYellowWhite, styles.fontRegular, styles.textXl, styles.textBold]}>
                         Login
                     </Animated.Text>
                 </View>
-                <View style={loginStyles.fieldContainer}>
+                <View style={startStyles.fieldContainer}>
                     <Animated.View style={styles.wFull} entering={fadeInDown(0)}>
                         <TextInput style={[styles.fontRegular, styles.p12, styles.rounded, styles.bgLightYellow]}
                             placeholder='Username' placeholderTextColor={'#AAA'} />
@@ -76,8 +76,8 @@ export default function FormLogin() {
                             <Button.Title>Login</Button.Title>
                         </Button>
                     </Animated.View>
-                    <View style={loginStyles.menu}>
-                        <Animated.View style={loginStyles.menuItem}
+                    <View style={startStyles.menu}>
+                        <Animated.View style={startStyles.menuItem}
                             entering={FadeInLeft.delay(500).duration(800).springify()}>
                             <Text style={[styles.fontRegular, styles.textCenter, styles.mb8]}>
                                 Entre com Google
@@ -87,7 +87,7 @@ export default function FormLogin() {
                                 <Button.Title>Login</Button.Title>
                             </Button>
                         </Animated.View>
-                        <Animated.View style={loginStyles.menuItem}
+                        <Animated.View style={startStyles.menuItem}
                             entering={FadeInRight.delay(500).duration(800).springify()}>
                             <Text style={[styles.fontRegular, styles.textCenter, styles.mb8]}>
                                 Não tem conta?

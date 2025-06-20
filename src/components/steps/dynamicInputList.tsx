@@ -1,14 +1,18 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
+import * as ImagePicker from "expo-image-picker";
+import * as VideoThumbnails from 'expo-video-thumbnails';
 import React, { useEffect, useState } from 'react';
 import {
+    Image,
     ScrollView,
-    StyleSheet,
     TextInput,
+    TouchableOpacity,
     View
 } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 
 import { productServer, UnitMeasure } from '@/server/product';
+import { dynamicStyles } from '@/styles/dynamic';
 import { formsStyles } from '@/styles/forms';
 import { styles } from '@/styles/global';
 import { Button } from '../button';
@@ -59,7 +63,7 @@ const TripleInput = ({
                 search
                 data={unitMeasures}
                 value={values[2]}
-                onChange={() => { }}
+                onChange={(text) => onChange(index, 2, text)}
                 renderLeftIcon={() => (
                     <MaterialCommunityIcons name="spoon-sugar" size={20} style={styles.mr8} />
                 )}
@@ -73,8 +77,12 @@ const TripleInput = ({
     );
 };
 
-const DynamicInputList = () => {
+export const DynamicInputList = () => {
     const [unitMeasures, setUnitMeasures] = useState<UnitMeasure[]>([]);
+    const [modoPreparo, setModoPreparo] = useState("");
+    const [timeMinutes, setTimeMinutes] = useState<number>();
+    const [videoUri, setVideoUri] = useState("");
+    const [thumbVideo, setThumbVideo] = useState("");
     const [inputGroups, setInputGroups] = useState<[string, string, string][]>([
         ['', '', ''],
     ]);
@@ -106,6 +114,33 @@ const DynamicInputList = () => {
         setInputGroups(updatedGroups);
     };
 
+    const pickVideo = async () => {
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ['videos'],
+            allowsEditing: true,
+            videoMaxDuration: 120,
+            quality: 1,
+        });
+
+        if (!result.canceled) {
+            const videoUri = result.assets[0].uri;
+            console.log('Selected video:', videoUri);
+            setVideoUri(videoUri);
+            generateThumbnail(videoUri);
+        }
+    };
+
+    const generateThumbnail = async (videoUri: string) => {
+        try {
+            const { uri } = await VideoThumbnails.getThumbnailAsync(
+                videoUri, { time: 1500 }
+            );
+            setThumbVideo(uri);
+        } catch (e) {
+            console.warn(e);
+        }
+    };
+
     useEffect(() => {
         productServer.getMeasures().then(result => {
             if (result) setUnitMeasures(result);
@@ -126,34 +161,37 @@ const DynamicInputList = () => {
                 />
             ))}
             <Button onPress={handleAddGroup} variant='tertiary'>
-                <Button.Title>adicionar novo ingrediente</Button.Title>
+                <Button.Title>Novo ingrediente</Button.Title>
             </Button>
+            <View style={styles.mt16}>
+                <TextInput
+                    style={[dynamicStyles.input, styles.fontRegular]}
+                    multiline
+                    numberOfLines={4}
+                    placeholder="Modo de Preparo"
+                    value={modoPreparo}
+                    onChangeText={setModoPreparo}
+                />
+                <TextInput
+                    style={[dynamicStyles.input, styles.fontRegular, styles.mb16]}
+                    inputMode="numeric"
+                    keyboardType="numeric"
+                    placeholder="Tempo estimado"
+                    value={timeMinutes ? timeMinutes.toString() : ""}
+                    onChangeText={(text) => setTimeMinutes(Number.parseInt(text))}
+                />
+                {!thumbVideo ?
+                    <Button onPress={pickVideo} variant="secondary">
+                        <Button.Title>Adicione um Vídeo</Button.Title>
+                    </Button>
+                    :
+                    <TouchableOpacity onPress={pickVideo} style={[styles.h200, styles.flex1]}>
+                        <FontAwesome5 style={dynamicStyles.imgPointer}
+                            name="hand-point-up" color="white" size={36} />
+                        <Image source={{ uri: thumbVideo }} style={dynamicStyles.thumbnail} />
+                    </TouchableOpacity>
+                }
+            </View>
         </ScrollView>
     );
 };
-
-const dynamicStyles = StyleSheet.create({
-    container: {
-        padding: 16,
-    },
-    inputGroup: {
-        marginBottom: 16,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        padding: 12,
-        borderRadius: 8,
-        backgroundColor: '#fff',
-    },
-    input: {
-        borderBottomWidth: 1,
-        borderColor: '#999',
-        marginBottom: 8,
-        padding: 8,
-    },
-    removeButton: {
-        marginTop: 8,
-        alignSelf: 'flex-end',
-    },
-});
-
-export default DynamicInputList;

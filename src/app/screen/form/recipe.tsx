@@ -10,8 +10,8 @@ import { recipeServer } from "@/server/recipe";
 import { tagServer } from "@/server/tag";
 import { formsStyles } from "@/styles/forms";
 import { styles } from "@/styles/global";
-import { loginStyles } from "@/styles/login";
-import { DataTable } from "react-native-paper";
+import { startStyles } from "@/styles/start";
+import { dynamicStyles } from "@/styles/dynamic";
 
 type TagItem = {
     label: string,
@@ -43,7 +43,6 @@ export default function RecipeForm() {
             name: 'thumb.jpg',
             type: thumb.type,
         };
-        console.log('recipe tags: ', requestTags);
         const request = { titulo: recipeTitle, tags: requestTags, file };
         recipeServer.save(request).then(resp => {
             switch (resp.status) {
@@ -107,7 +106,7 @@ export default function RecipeForm() {
                 <ScrollView showsVerticalScrollIndicator={false}
                     contentContainerStyle={{ paddingBottom: 12, marginVertical: 6 }}>
                     <View style={[styles.flexInitial, styles.gap8]}>
-                        <TextInput style={[styles.wFull, styles.fontRegular, styles.p12, styles.rounded, styles.borded]}
+                        <TextInput style={[dynamicStyles.input, styles.fontRegular]}
                             placeholder="Título da Receita" value={recipeTitle} onChangeText={setRecipeTitle}
                             editable={recipeId ? false : true} />
                         <MultiSelect
@@ -145,7 +144,7 @@ export default function RecipeForm() {
                         }
                     </View>
                     {recipeId &&
-                        <View style={[loginStyles.menu, styles.my16, styles.h50]}>
+                        <View style={[startStyles.menu, styles.my16, styles.h50]}>
                             <Button icon="add-circle-outline"
                                 onPress={() => setOpenModal(true)} variant="secondary">
                                 <Button.Title>Add Step</Button.Title>

@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 
 import { Modal } from "../modal";
-import DynamicInputList from "./dynamicInputList";
+import { DynamicInputList } from "./dynamicInputList";
 
 type StepModalProp = {
     openModal: boolean,
