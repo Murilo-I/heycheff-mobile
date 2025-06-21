@@ -11,8 +11,9 @@ export type Step = {
 }
 
 export type StepRequest = Step & {
-    video: Blob
+    video: { uri: string, name: string, type: string }
     recipeId: number
+    thumbVideo: string
 }
 
 export type StepResponse = {
@@ -32,12 +33,15 @@ async function saveStep(step: StepRequest) {
     formData.append('produtos', JSON.stringify(step.produtos));
     formData.append('modoPreparo', step.modoPreparo);
     formData.append('timeMinutes', step.timeMinutes.toString());
-    formData.append('video', step.video);
+    formData.append('video', step.video as any);
 
     try {
-        return await api.post<StepResponse>(`${baseUrl}/${step.recipeId}${partUrl}`, {
+        return await api.post<StepResponse>(`${baseUrl}/${step.recipeId}${partUrl}`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
+            },
+            transformRequest: (data, headers) => {
+                return data;
             }
         });
     } catch (error) {
@@ -59,12 +63,16 @@ async function updateStep(step: StepRequest) {
     formData.append('produtos', JSON.stringify(step.produtos));
     formData.append('modoPreparo', step.modoPreparo);
     formData.append('timeMinutes', step.timeMinutes.toString());
-    formData.append('video', step.video);
+    formData.append('video', step.video as any);
 
     try {
-        return await api.patch<StepResponse>(`${baseUrl}/${step.recipeId}${partUrl}/${step.stepNumber}`, {
+        return await api.patch<StepResponse>(`${baseUrl}/${step.recipeId}${partUrl}/${step.stepNumber}`,
+            formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
+            },
+            transformRequest: (data, headers) => {
+                return data;
             }
         });
     } catch (error) {

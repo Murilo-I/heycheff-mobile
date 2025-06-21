@@ -24,7 +24,7 @@ export type RecipeModal = {
 export type RecipeRequest = {
     titulo: string,
     tags: Tag[],
-    file: {}
+    file: { uri: string, name: string, type: string }
 }
 
 export const baseUrl = '/receitas';

@@ -32,5 +32,30 @@ export const dynamicStyles = StyleSheet.create({
         alignSelf: 'center',
         marginTop: 80,
         zIndex: 1,
-    }
+    },
+    row: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 12,
+        marginVertical: 4,
+        marginHorizontal: 10,
+        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        backgroundColor: 'white',
+    },
+    image: {
+        width: 60,
+        height: 60,
+        borderRadius: 8,
+        marginRight: 12,
+    },
+    actions: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
+    },
+    iconButton: {
+        padding: 8,
+    },
 });

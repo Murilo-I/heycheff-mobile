@@ -5,13 +5,15 @@ import { MultiSelect } from "react-native-element-dropdown";
 
 import { Button } from "@/components/button";
 import { StepCadModal } from "@/components/steps/cadModal";
+import { DataTable, RowItem } from "@/components/steps/dataTable";
 import { useImageRecognition } from "@/hooks/useImageRecognition";
 import { recipeServer } from "@/server/recipe";
+import { StepRequest } from "@/server/step";
 import { tagServer } from "@/server/tag";
+import { dynamicStyles } from "@/styles/dynamic";
 import { formsStyles } from "@/styles/forms";
 import { styles } from "@/styles/global";
 import { startStyles } from "@/styles/start";
-import { dynamicStyles } from "@/styles/dynamic";
 
 type TagItem = {
     label: string,
@@ -19,7 +21,7 @@ type TagItem = {
 }
 
 export default function RecipeForm() {
-    const { selectedImageUri, isLoading, imgItems, handleThumbnail } = useImageRecognition();
+    const { selectedImageUri, isLoading, handleThumbnail } = useImageRecognition();
 
     const [tags, setTags] = useState<TagItem[]>([]);
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -27,9 +29,15 @@ export default function RecipeForm() {
     const [recipeId, setRecipeId] = useState(0);
     const [isPosting, setIsPosting] = useState(false);
     const [openStepModal, setOpenModal] = useState(false);
+    const [dataSteps, setDataSteps] = useState<StepRequest[]>([]);
+    const [tableItems, setItems] = useState<RowItem[]>([]);
+
+    const addStep = (step: StepRequest) => {
+        setDataSteps([...dataSteps, step]);
+    }
 
     async function saveRecipe() {
-        // setIsPosting(true);
+        setIsPosting(true);
         const requestTags = selectedTags.map(selected => {
             const tag = tags.find(tag => tag.value === selected)?.label;
             return {
@@ -47,29 +55,32 @@ export default function RecipeForm() {
         recipeServer.save(request).then(resp => {
             switch (resp.status) {
                 case 201:
-                    Alert.alert("Receita cadastrada com sucesso!");
+                    Alert.alert("1º Etapa", "Receita salva com sucesso!");
                     setRecipeId(resp.data.seqId);
                     break;
 
                 case 400:
-                    Alert.alert("Preencha os campos corretamente!");
+                    Alert.alert("Falha no cadastro", "Preencha os campos corretamente!");
                     setIsPosting(false);
                     break;
 
                 default:
-                    Alert.alert("Erro ao cadastrar, tente novamente!");
-                    console.log(`SaveRecipe Error: status -> ${resp.status} | body: ${resp.data}`);
+                    Alert.alert("Erro Interno", "Tente novamente mais tarde!");
+                    console.warn(`SaveRecipe Error: status -> ${resp.status} | body: ${resp.data}`);
                     setIsPosting(false);
                     break;
             }
         })
             .catch(error => {
                 if (error.response) {
-                    console.log('Backend error response:', error.response.data);
+                    const resp = error.response;
+                    console.warn('Backend error response:', resp.data);
+                    Alert.alert(resp.data.errorMessage, JSON.stringify(resp.data.details));
+                    setIsPosting(false);
                 } else if (error.request) {
-                    console.log('No response received:', error.request);
+                    console.warn('No response received:', error.request);
                 } else {
-                    console.log('Error setting up request:', error.message);
+                    console.warn('Error setting up request:', error.message);
                 }
             });
     }
@@ -84,6 +95,13 @@ export default function RecipeForm() {
         }
         loadTags();
     }, []);
+
+    useEffect(() => {
+        setItems(dataSteps.map(step => ({
+            key: step.stepNumber.toString(),
+            imageUri: step.thumbVideo
+        })));
+    }, [dataSteps]);
 
     return (
         <View style={styles.flex1}>
@@ -137,26 +155,37 @@ export default function RecipeForm() {
                             </Button>
                             :
                             <View style={styles.my16}>
-                                <Text style={[styles.fontRegular, styles.textSmall]}>
-                                    Nenhum Step Adicionado
-                                </Text>
+                                {tableItems.length > 0 ?
+                                    <DataTable tableItems={tableItems} />
+                                    :
+                                    <Text style={[styles.fontRegular, styles.textSmall]}>
+                                        Nenhum Step Adicionado
+                                    </Text>
+                                }
                             </View>
                         }
                     </View>
                     {recipeId &&
-                        <View style={[startStyles.menu, styles.my16, styles.h50]}>
-                            <Button icon="add-circle-outline"
-                                onPress={() => setOpenModal(true)} variant="secondary">
-                                <Button.Title>Add Step</Button.Title>
-                            </Button>
-                            <Button btnStyle={styles.p2} icon="cloud-upload">
-                                <Button.Title>Publicar Receita</Button.Title>
-                            </Button>
-                        </View>
+                        <>
+                            <View style={[startStyles.menu, styles.my16, styles.h50]}>
+                                <Button icon="add-circle-outline"
+                                    onPress={() => setOpenModal(true)} variant="secondary">
+                                    <Button.Title>Add Step</Button.Title>
+                                </Button>
+                                <Button btnStyle={styles.p2} icon="cloud-upload">
+                                    <Button.Title>Publicar Receita</Button.Title>
+                                </Button>
+                            </View>
+                            <StepCadModal
+                                recipeId={recipeId}
+                                openModal={openStepModal}
+                                setOpenModal={setOpenModal}
+                                addStep={addStep}
+                            />
+                        </>
                     }
                 </ScrollView>
             </View>
-            <StepCadModal openModal={openStepModal} setOpenModal={setOpenModal} />
         </View>
     );
 }
