@@ -1,12 +1,15 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
-import { Alert, Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, Image, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { MultiSelect } from "react-native-element-dropdown";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { Button } from "@/components/button";
 import { StepCadModal } from "@/components/steps/cadModal";
 import { DataTable, RowItem } from "@/components/steps/dataTable";
 import { useImageRecognition } from "@/hooks/useImageRecognition";
+import { useAppDispatch } from "@/redux/hooks";
+import { setStepNumber } from "@/redux/step/stepSlice";
 import { recipeServer } from "@/server/recipe";
 import { StepRequest } from "@/server/step";
 import { tagServer } from "@/server/tag";
@@ -22,6 +25,7 @@ type TagItem = {
 
 export default function RecipeForm() {
     const { selectedImageUri, isLoading, handleThumbnail } = useImageRecognition();
+    const dispatch = useAppDispatch();
 
     const [tags, setTags] = useState<TagItem[]>([]);
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -75,12 +79,17 @@ export default function RecipeForm() {
                 if (error.response) {
                     const resp = error.response;
                     console.warn('Backend error response:', resp.data);
-                    Alert.alert(resp.data.errorMessage, JSON.stringify(resp.data.details));
+                    if (!resp.data.details)
+                        Alert.alert(resp.data.errorMessage, "Por favor, tente novamente.");
+                    else
+                        Alert.alert(resp.data.errorMessage, JSON.stringify(resp.data.details));
                     setIsPosting(false);
                 } else if (error.request) {
                     console.warn('No response received:', error.request);
+                    setIsPosting(false);
                 } else {
                     console.warn('Error setting up request:', error.message);
+                    setIsPosting(false);
                 }
             });
     }
@@ -97,6 +106,7 @@ export default function RecipeForm() {
     }, []);
 
     useEffect(() => {
+        dispatch(setStepNumber(dataSteps.length + 1));
         setItems(dataSteps.map(step => ({
             key: step.stepNumber.toString(),
             imageUri: step.thumbVideo
@@ -120,71 +130,72 @@ export default function RecipeForm() {
                         </Text>
                     </TouchableOpacity>
             }
-            <View style={[formsStyles.bottomContainer, styles.bgYellowWhite]}>
-                <ScrollView showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{ paddingBottom: 12, marginVertical: 6 }}>
-                    <View style={[styles.flexInitial, styles.gap8]}>
-                        <TextInput style={[dynamicStyles.input, styles.fontRegular]}
-                            placeholder="Título da Receita" value={recipeTitle} onChangeText={setRecipeTitle}
-                            editable={recipeId ? false : true} />
-                        <MultiSelect
-                            style={
-                                recipeId ? { display: 'none' } : [formsStyles.dropdown, styles.flex1]
-                            }
-                            selectedStyle={styles.rounded}
-                            selectedTextStyle={[styles.fontRegular, styles.textMedium]}
-                            inputSearchStyle={[styles.fontRegular, styles.h40]}
-                            placeholderStyle={styles.fontRegular}
-                            labelField="label"
-                            valueField="value"
-                            placeholder="Selecione uma ou mais categorias"
-                            searchPlaceholder="Pesquisar..."
-                            disable={recipeId ? true : false}
-                            search
-                            data={tags}
-                            value={selectedTags}
-                            onChange={setSelectedTags}
-                            renderLeftIcon={() => (
-                                <MaterialIcons name="category" size={20} style={styles.mr8} />
-                            )}
-                        />
-                        {!recipeId ?
-                            <Button disabled={isPosting} btnStyle={styles.wFull}
-                                onPress={saveRecipe}>
-                                <Button.Title>Salvar</Button.Title>
-                            </Button>
-                            :
-                            <View style={styles.my16}>
-                                {tableItems.length > 0 ?
-                                    <DataTable tableItems={tableItems} />
-                                    :
-                                    <Text style={[styles.fontRegular, styles.textSmall]}>
-                                        Nenhum Step Adicionado
-                                    </Text>
-                                }
-                            </View>
+            <View style={[formsStyles.bottomContainer, styles.bgYellowWhite, styles.my6]}>
+                <View style={[styles.flexInitial, styles.gap8]}>
+                    <TextInput style={[dynamicStyles.input, styles.fontRegular]}
+                        placeholder="Título da Receita" value={recipeTitle} onChangeText={setRecipeTitle}
+                        editable={recipeId ? false : true} />
+                    <MultiSelect
+                        style={
+                            recipeId ? { display: 'none' } : [formsStyles.dropdown, styles.wFull]
                         }
-                    </View>
-                    {recipeId &&
-                        <>
-                            <View style={[startStyles.menu, styles.my16, styles.h50]}>
-                                <Button icon="add-circle-outline"
-                                    onPress={() => setOpenModal(true)} variant="secondary">
-                                    <Button.Title>Add Step</Button.Title>
-                                </Button>
-                                <Button btnStyle={styles.p2} icon="cloud-upload">
-                                    <Button.Title>Publicar Receita</Button.Title>
-                                </Button>
-                            </View>
-                            <StepCadModal
-                                recipeId={recipeId}
-                                openModal={openStepModal}
-                                setOpenModal={setOpenModal}
-                                addStep={addStep}
-                            />
-                        </>
+                        selectedStyle={[styles.rounded, { marginBottom: 0 }]}
+                        selectedTextStyle={[styles.fontRegular, styles.textMedium]}
+                        inputSearchStyle={[styles.fontRegular, styles.h40]}
+                        placeholderStyle={styles.fontRegular}
+                        labelField="label"
+                        valueField="value"
+                        placeholder="Selecione uma ou mais categorias"
+                        searchPlaceholder="Pesquisar..."
+                        disable={recipeId ? true : false}
+                        search
+                        data={tags}
+                        value={selectedTags}
+                        onChange={setSelectedTags}
+                        renderLeftIcon={() => (
+                            <MaterialIcons name="category" size={20} style={styles.mr8} />
+                        )}
+                    />
+                    {!recipeId ?
+                        <Button disabled={isPosting} btnStyle={styles.wFull}
+                            onPress={saveRecipe} isLoading={isPosting}>
+                            <Button.Title>Salvar</Button.Title>
+                        </Button>
+                        :
+                        <GestureHandlerRootView style={[styles.my16, styles.flex1]}>
+                            {tableItems.length > 0 ?
+                                <DataTable tableItems={tableItems} />
+                                :
+                                <Text style={[styles.fontRegular, styles.textSmall, styles.selfCenter]}>
+                                    Nenhum Step Adicionado
+                                </Text>
+                            }
+                        </GestureHandlerRootView>
                     }
-                </ScrollView>
+                </View>
+                {recipeId &&
+                    <>
+                        <View style={[
+                            startStyles.menu, styles.my16, styles.h50, styles.absolute,
+                            styles.selfCenter, { bottom: -16 }
+                        ]}>
+                            <Button icon="add-circle-outline"
+                                onPress={() => setOpenModal(true)} variant="secondary">
+                                <Button.Title>Adicione</Button.Title>
+                            </Button>
+                            <Button btnStyle={styles.p2} icon="cloud-upload"
+                                onPress={() => recipeServer.updateStatus(recipeId)} >
+                                <Button.Title>Publicar Receita</Button.Title>
+                            </Button>
+                        </View>
+                        <StepCadModal
+                            recipeId={recipeId}
+                            openModal={openStepModal}
+                            setOpenModal={setOpenModal}
+                            addStep={addStep}
+                        />
+                    </>
+                }
             </View>
         </View>
     );

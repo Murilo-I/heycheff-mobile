@@ -83,6 +83,10 @@ export const styles = StyleSheet.create({
         alignItems: 'flex-start'
     },
 
+    selfCenter: {
+        alignSelf: 'center'
+    },
+
     absolute: {
         position: 'absolute'
     },
@@ -138,7 +142,8 @@ export const styles = StyleSheet.create({
         width: '100%',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'flex-start'
+        justifyContent: 'flex-start',
+        paddingBottom: 8
     },
 
     postImage: {
@@ -293,6 +298,14 @@ export const styles = StyleSheet.create({
         marginHorizontal: 8
     },
 
+    mx16: {
+        marginHorizontal: 16
+    },
+
+    my6: {
+        marginVertical: 6
+    },
+
     my16: {
         marginVertical: 16
     },
@@ -311,6 +324,10 @@ export const styles = StyleSheet.create({
 
     p12: {
         padding: 12
+    },
+
+    pb12: {
+        paddingBottom: 12
     },
 
     h40: {
@@ -347,5 +364,9 @@ export const styles = StyleSheet.create({
 
     wFull: {
         width: '100%'
+    },
+
+    wXFull: {
+        width: '110%'
     }
 });

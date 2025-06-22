@@ -1,5 +1,5 @@
 import { FontAwesome } from '@expo/vector-icons';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Image,
     TouchableOpacity,
@@ -19,6 +19,10 @@ export type RowItem = {
 export const DataTable = ({ tableItems }: { tableItems: RowItem[] }) => {
     const [data, setData] = useState(tableItems);
 
+    useEffect(() => {
+        setData(tableItems);
+    }, [tableItems]);
+
     const renderItem = ({ item, drag, isActive }: RenderItemParams<RowItem>) => (
         <TouchableOpacity
             style={[
@@ -32,10 +36,10 @@ export const DataTable = ({ tableItems }: { tableItems: RowItem[] }) => {
             <Image source={{ uri: item.imageUri }} style={dynamicStyles.image} />
             <View style={dynamicStyles.actions}>
                 <TouchableOpacity style={dynamicStyles.iconButton} onPress={() => console.log('Edit', item.key)}>
-                    <FontAwesome name="edit" size={20} color="#007bff" />
+                    <FontAwesome name="edit" size={25} color="#007bff" />
                 </TouchableOpacity>
                 <TouchableOpacity style={dynamicStyles.iconButton} onPress={() => console.log('Delete', item.key)}>
-                    <FontAwesome name="trash" size={20} color="#dc3545" />
+                    <FontAwesome name="trash" size={25} color="#dc3545" />
                 </TouchableOpacity>
             </View>
         </TouchableOpacity>
@@ -43,6 +47,7 @@ export const DataTable = ({ tableItems }: { tableItems: RowItem[] }) => {
 
     return (
         <DraggableFlatList
+            containerStyle={{ flexGrow: 1, maxHeight: 175 }}
             data={data}
             onDragEnd={({ data }) => setData(data)}
             keyExtractor={(item) => item.key}

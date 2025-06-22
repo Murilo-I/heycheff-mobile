@@ -58,7 +58,7 @@ export const ProductInput = ({
                 search
                 data={unitMeasures}
                 value={values[2]}
-                onChange={(text) => onChange(index, 2, text)}
+                onChange={(text) => onChange(index, 2, text.descricao)}
                 renderLeftIcon={() => (
                     <MaterialCommunityIcons name="spoon-sugar" size={20} style={styles.mr8} />
                 )}

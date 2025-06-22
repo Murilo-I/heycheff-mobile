@@ -19,23 +19,25 @@ export const stepSlice = createSlice({
     initialState,
     reducers: {
         setCurrentStep: (state, action: PayloadAction<StepRequest>) => {
-            state = action.payload;
+            return action.payload;
         },
 
         setRecipeId: (state, action: PayloadAction<number>) => {
             state.recipeId = action.payload;
         },
 
-        nextStep: state => {
-            state.stepNumber += state.stepNumber;
+        setStepNumber: (state, action: PayloadAction<number>) => {
+            state.stepNumber = action.payload;
         },
 
         resetStep: state => {
-            state = initialState;
+            var nextStep = initialState;
+            nextStep.stepNumber = state.stepNumber;
+            return nextStep;
         }
     }
 });
 
-export const { setCurrentStep, nextStep, setRecipeId, resetStep } = stepSlice.actions;
+export const { setCurrentStep, setStepNumber, setRecipeId, resetStep } = stepSlice.actions;
 export const currentStep = (state: RootState) => state.currentStep;
 export default stepSlice.reducer;

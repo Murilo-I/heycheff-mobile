@@ -1,10 +1,10 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Alert, View } from "react-native";
 
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { nextStep, resetStep, setRecipeId } from "@/redux/step/stepSlice";
+import { resetStep, setRecipeId } from "@/redux/step/stepSlice";
 import { StepRequest, stepServer } from "@/server/step";
 import { styles } from "@/styles/global";
-import { Alert } from "react-native";
 import { Button } from "../button";
 import { Modal } from "../modal";
 import { DynamicInputList } from "./dynamicInputList";
@@ -21,14 +21,19 @@ export const StepCadModal = ({ recipeId, openModal, setOpenModal, addStep }: Ste
     const dispatch = useAppDispatch();
 
     const [enableFinalize, setEnable] = useState(false);
+    const [isPosting, setIsPosting] = useState(false);
 
     const saveStep = async () => {
+        setIsPosting(true);
+        dispatch(setRecipeId(recipeId));
         stepServer.saveStep(currentStep)
             .then(resp => {
                 if (resp.status == 201) {
                     addStep(currentStep);
                     Alert.alert("2º Etapa", "Step salvo com sucesso!");
                     setOpenModal(false);
+                    setIsPosting(false);
+                    setEnable(false);
                     dispatch(resetStep());
                 } else {
                     Alert.alert("Erro Interno", "Tente novamente mais tarde!");
@@ -38,24 +43,28 @@ export const StepCadModal = ({ recipeId, openModal, setOpenModal, addStep }: Ste
             .catch(error => {
                 if (error.response) {
                     const resp = error.response;
-                    console.warn('Backend error response:', resp.data);
-                    Alert.alert(resp.data.errorMessage, JSON.stringify(resp.data.details));
+                    console.warn('Backend error response:', JSON.stringify(resp));
+                    if (resp.data)
+                        Alert.alert(resp.data.errorMessage, JSON.stringify(resp.data.details));
+                    else if (resp.status === 413)
+                        Alert.alert("Falha na 2º etapa", "Arquivos acima de 40MB não são permitidos.");
+                    else
+                        Alert.alert("Erro Interno", "Tente novamente mais tarde!");
+
+                    setIsPosting(false);
                 } else if (error.request) {
                     console.warn('No response received:', error.request);
+                    setIsPosting(false);
                 } else {
                     console.warn('Error setting up request:', error.message);
+                    setIsPosting(false);
                 }
             });
     }
 
     useEffect(() => {
-        dispatch(setRecipeId(recipeId));
-        dispatch(nextStep());
-    }, []);
-
-    useEffect(() => {
-        if (currentStep.modoPreparo && currentStep.produtos.length && currentStep.video.uri
-            && currentStep.timeMinutes && currentStep.stepNumber)
+        if (currentStep.modoPreparo && currentStep.produtos.length
+            && currentStep.video.uri && currentStep.timeMinutes)
             setEnable(true);
     }, [currentStep]);
 
@@ -74,9 +83,12 @@ export const StepCadModal = ({ recipeId, openModal, setOpenModal, addStep }: Ste
         }}>
             <DynamicInputList />
             {enableFinalize &&
-                <Button btnStyle={[styles.wFull, styles.my16]} onPress={saveStep}>
-                    <Button.Title>Salvar Step</Button.Title>
-                </Button>
+                <View style={styles.mx16} >
+                    <Button btnStyle={styles.wFull} onPress={saveStep}
+                        disabled={isPosting} isLoading={isPosting} >
+                        <Button.Title>Salvar Step</Button.Title>
+                    </Button>
+                </View>
             }
         </Modal>
     );

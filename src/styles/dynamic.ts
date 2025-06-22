@@ -37,12 +37,11 @@ export const dynamicStyles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         padding: 12,
-        marginVertical: 4,
-        marginHorizontal: 10,
         borderRadius: 8,
         borderWidth: 1,
         borderColor: '#ccc',
         backgroundColor: 'white',
+        marginBottom: 2,
     },
     image: {
         width: 60,
