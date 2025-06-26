@@ -23,43 +23,66 @@ export const StepCadModal = ({ recipeId, openModal, setOpenModal, addStep }: Ste
     const [enableFinalize, setEnable] = useState(false);
     const [isPosting, setIsPosting] = useState(false);
 
+    const serverError = () => Alert.alert("Erro Interno", "Tente novamente mais tarde!");
+
+    const afterPost = () => {
+        addStep(currentStep);
+        setOpenModal(false);
+        setIsPosting(false);
+        setEnable(false);
+        dispatch(resetStep());
+    }
+
+    const onPostError = (error: any) => {
+        try {
+            if (error.response) {
+                const resp = error.response;
+                console.warn('Backend error response:', JSON.stringify(resp));
+                if (resp.data)
+                    Alert.alert(resp.data.errorMessage, JSON.stringify(resp.data.details));
+                else if (resp.status === 413)
+                    Alert.alert("Falha na 2º etapa", "Arquivos acima de 80MB não são permitidos.");
+                else
+                    serverError();
+            } else if (error.request) {
+                console.warn('No response received:', error.request);
+            } else {
+                console.warn('Error setting up request:', error.message);
+            }
+        } finally {
+            setIsPosting(false);
+        }
+    }
+
     const saveStep = async () => {
         setIsPosting(true);
         dispatch(setRecipeId(recipeId));
         stepServer.saveStep(currentStep)
             .then(resp => {
                 if (resp.status == 201) {
-                    addStep(currentStep);
                     Alert.alert("2º Etapa", "Step salvo com sucesso!");
-                    setOpenModal(false);
-                    setIsPosting(false);
-                    setEnable(false);
-                    dispatch(resetStep());
+                    afterPost();
                 } else {
-                    Alert.alert("Erro Interno", "Tente novamente mais tarde!");
+                    serverError();
                     console.warn(`SaveRecipe Error: status -> ${resp.status} | body: ${resp.data}`);
                 }
             })
-            .catch(error => {
-                if (error.response) {
-                    const resp = error.response;
-                    console.warn('Backend error response:', JSON.stringify(resp));
-                    if (resp.data)
-                        Alert.alert(resp.data.errorMessage, JSON.stringify(resp.data.details));
-                    else if (resp.status === 413)
-                        Alert.alert("Falha na 2º etapa", "Arquivos acima de 40MB não são permitidos.");
-                    else
-                        Alert.alert("Erro Interno", "Tente novamente mais tarde!");
+            .catch(error => onPostError(error));
+    }
 
-                    setIsPosting(false);
-                } else if (error.request) {
-                    console.warn('No response received:', error.request);
-                    setIsPosting(false);
+    const updateStep = async () => {
+        setIsPosting(true);
+        stepServer.updateStep(currentStep)
+            .then(resp => {
+                if (resp.status == 200) {
+                    Alert.alert("2º Etapa", "Step atualizado com sucesso!");
+                    afterPost();
                 } else {
-                    console.warn('Error setting up request:', error.message);
-                    setIsPosting(false);
+                    serverError();
+                    console.warn(`UpdateRecipe Error: status -> ${resp.status} | body: ${resp.data}`);
                 }
-            });
+            })
+            .catch(error => onPostError(error));
     }
 
     useEffect(() => {
@@ -77,14 +100,18 @@ export const StepCadModal = ({ recipeId, openModal, setOpenModal, addStep }: Ste
                 },
                 {
                     text: "Sim",
-                    onPress: () => setOpenModal(false)
+                    onPress: () => {
+                        setOpenModal(false);
+                        dispatch(resetStep());
+                    }
                 }
             ]);
         }}>
             <DynamicInputList />
             {enableFinalize &&
                 <View style={styles.mx16} >
-                    <Button btnStyle={styles.wFull} onPress={saveStep}
+                    <Button btnStyle={styles.wFull}
+                        onPress={currentStep.isUpdating ? updateStep : saveStep}
                         disabled={isPosting} isLoading={isPosting} >
                         <Button.Title>Salvar Step</Button.Title>
                     </Button>

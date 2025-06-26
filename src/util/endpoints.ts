@@ -1,4 +1,4 @@
-const NGROK_SERVER = 'https://1338-2804-1b1-fac3-8dfb-907-8bf8-1e14-41ee.ngrok-free.app';
+const NGROK_SERVER = 'https://8b4a-2804-1b1-fac0-1a4a-3c3e-5017-e9b5-f942.ngrok-free.app';
 const URL_DEV = `${NGROK_SERVER}/heycheff`;
 const URL_MEDIA_DEV = NGROK_SERVER;
 

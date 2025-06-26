@@ -14,6 +14,7 @@ export type StepRequest = Step & {
     video: { uri: string, name: string, type: string }
     recipeId: number
     thumbVideo: string
+    isUpdating: boolean
 }
 
 export type StepResponse = {
@@ -51,7 +52,7 @@ async function saveStep(step: StepRequest) {
 
 async function deleteStep(stepNumber: number, recipeId: number) {
     try {
-        return await api.delete(`${baseUrl}/${recipeId}${partUrl}/${stepNumber}`);
+        await api.delete(`${baseUrl}/${recipeId}${partUrl}/${stepNumber}`);
     } catch (error) {
         console.log("Could not delete step: ", error);
     }

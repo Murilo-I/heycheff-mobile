@@ -57,4 +57,8 @@ export const dynamicStyles = StyleSheet.create({
     iconButton: {
         padding: 8,
     },
+    dragList: {
+        flexGrow: 1,
+        maxHeight: 175
+    }
 });

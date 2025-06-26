@@ -8,7 +8,7 @@ import { Button } from "@/components/button";
 import { StepCadModal } from "@/components/steps/cadModal";
 import { DataTable, RowItem } from "@/components/steps/dataTable";
 import { useImageRecognition } from "@/hooks/useImageRecognition";
-import { useAppDispatch } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setStepNumber } from "@/redux/step/stepSlice";
 import { recipeServer } from "@/server/recipe";
 import { StepRequest } from "@/server/step";
@@ -24,7 +24,8 @@ type TagItem = {
 }
 
 export default function RecipeForm() {
-    const { selectedImageUri, isLoading, handleThumbnail } = useImageRecognition();
+    const { selectedImageUri, isLoading, handleThumbnail, clearThumb } = useImageRecognition();
+    const userProfile = useAppSelector(state => state.profile);
     const dispatch = useAppDispatch();
 
     const [tags, setTags] = useState<TagItem[]>([]);
@@ -37,7 +38,24 @@ export default function RecipeForm() {
     const [tableItems, setItems] = useState<RowItem[]>([]);
 
     const addStep = (step: StepRequest) => {
-        setDataSteps([...dataSteps, step]);
+        if (step.isUpdating) {
+            const updData = dataSteps.map(_ => _.stepNumber === step.stepNumber ? step : _);
+            setDataSteps(updData);
+        } else
+            setDataSteps([...dataSteps, step]);
+    }
+
+    const spliceStep = (step: StepRequest) => {
+        const ri = dataSteps.indexOf(step);
+        dataSteps.splice(ri, 1);
+    }
+
+    function resetForm() {
+        setRecipeId(0);
+        setRecipeTitle('');
+        setSelectedTags([]);
+        setDataSteps([]);
+        clearThumb();
     }
 
     async function saveRecipe() {
@@ -76,21 +94,41 @@ export default function RecipeForm() {
             }
         })
             .catch(error => {
-                if (error.response) {
-                    const resp = error.response;
-                    console.warn('Backend error response:', resp.data);
-                    if (!resp.data.details)
-                        Alert.alert(resp.data.errorMessage, "Por favor, tente novamente.");
-                    else
-                        Alert.alert(resp.data.errorMessage, JSON.stringify(resp.data.details));
-                    setIsPosting(false);
-                } else if (error.request) {
-                    console.warn('No response received:', error.request);
-                    setIsPosting(false);
-                } else {
-                    console.warn('Error setting up request:', error.message);
+                try {
+                    if (error.response) {
+                        const resp = error.response;
+                        console.warn('Backend error response:', resp.data);
+                        if (!resp.data.details)
+                            Alert.alert(resp.data.errorMessage, "Por favor, tente novamente.");
+                        else
+                            Alert.alert(resp.data.errorMessage, JSON.stringify(resp.data.details));
+                    } else if (error.request) {
+                        console.warn('No response received:', error.request);
+                    } else {
+                        console.warn('Error setting up request:', error.message);
+                    }
+                } finally {
                     setIsPosting(false);
                 }
+            });
+    }
+
+    async function publishRecipe() {
+        recipeServer.updateStatus(recipeId)
+            .then(() => {
+                if (userProfile.content.length === 0)
+                    Alert.alert("Fim da 2º etapa", "Parabéns pela sua primeira publicação!");
+                else
+                    Alert.alert("Fim da 2º etapa", "Receita publicada com sucesso!");
+
+                resetForm();
+            })
+            .catch(error => {
+                console.warn("Erro ao publicar receita: ", error);
+                if (error.response)
+                    Alert.alert("Falha ao publicar receita", error.response.data.errorMessage);
+                else
+                    Alert.alert("Falha ao publicar receita", "Tente novamente mais tarde!");
             });
     }
 
@@ -109,7 +147,7 @@ export default function RecipeForm() {
         dispatch(setStepNumber(dataSteps.length + 1));
         setItems(dataSteps.map(step => ({
             key: step.stepNumber.toString(),
-            imageUri: step.thumbVideo
+            step: step
         })));
     }, [dataSteps]);
 
@@ -118,7 +156,7 @@ export default function RecipeForm() {
             {
                 selectedImageUri ?
                     <TouchableOpacity style={styles.flex1}
-                        onPress={handleThumbnail} disabled={isLoading}>
+                        onPress={handleThumbnail} disabled={isLoading || recipeId > 0}>
                         <Image source={{ uri: selectedImageUri }}
                             resizeMode="cover" style={styles.flex1} />
                     </TouchableOpacity>
@@ -164,7 +202,8 @@ export default function RecipeForm() {
                         :
                         <GestureHandlerRootView style={[styles.my16, styles.flex1]}>
                             {tableItems.length > 0 ?
-                                <DataTable tableItems={tableItems} />
+                                <DataTable tableItems={tableItems} openModal={() => setOpenModal(true)}
+                                    spliceStep={spliceStep} />
                                 :
                                 <Text style={[styles.fontRegular, styles.textSmall, styles.selfCenter]}>
                                     Nenhum Step Adicionado
@@ -184,7 +223,7 @@ export default function RecipeForm() {
                                 <Button.Title>Adicione</Button.Title>
                             </Button>
                             <Button btnStyle={styles.p2} icon="cloud-upload"
-                                onPress={() => recipeServer.updateStatus(recipeId)} >
+                                onPress={publishRecipe} >
                                 <Button.Title>Publicar Receita</Button.Title>
                             </Button>
                         </View>

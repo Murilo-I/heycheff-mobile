@@ -90,6 +90,19 @@ export const DynamicInputList = () => {
         productServer.getMeasures().then(result => {
             if (result) setUnitMeasures(result);
         });
+        if (currentStep.isUpdating) {
+            setInputGroups(
+                currentStep.produtos.map(prod => ([
+                    prod.desc,
+                    prod.medida.toString(),
+                    prod.unidMedida
+                ]))
+            );
+            setModoPreparo(currentStep.modoPreparo);
+            setTimeMinutes(currentStep.timeMinutes);
+            setThumbVideo(currentStep.thumbVideo);
+            setVideoUri(currentStep.video.uri);
+        }
     }, []);
 
     useEffect(() => {
@@ -113,7 +126,8 @@ export const DynamicInputList = () => {
                     },
                     recipeId: currentStep.recipeId,
                     stepNumber: currentStep.stepNumber,
-                    timeMinutes: timeMinutes ? timeMinutes : 0
+                    timeMinutes: timeMinutes ? timeMinutes : 0,
+                    isUpdating: currentStep.isUpdating
                 }
                 dispatch(setCurrentStep(stepRequest));
             }

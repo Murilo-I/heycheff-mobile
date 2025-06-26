@@ -11,7 +11,8 @@ const initialState: StepRequest = {
     video: { uri: '', name: '', type: '' },
     recipeId: 0,
     stepNumber: 0,
-    timeMinutes: 0
+    timeMinutes: 0,
+    isUpdating: false
 }
 
 export const stepSlice = createSlice({
@@ -30,6 +31,10 @@ export const stepSlice = createSlice({
             state.stepNumber = action.payload;
         },
 
+        setIsUpdating: (state, action: PayloadAction<boolean>) => {
+            state.isUpdating = action.payload;
+        },
+
         resetStep: state => {
             var nextStep = initialState;
             nextStep.stepNumber = state.stepNumber;
@@ -38,6 +43,6 @@ export const stepSlice = createSlice({
     }
 });
 
-export const { setCurrentStep, setStepNumber, setRecipeId, resetStep } = stepSlice.actions;
+export const { setCurrentStep, setStepNumber, setIsUpdating, setRecipeId, resetStep } = stepSlice.actions;
 export const currentStep = (state: RootState) => state.currentStep;
 export default stepSlice.reducer;

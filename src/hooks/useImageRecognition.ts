@@ -88,10 +88,15 @@ export const useImageRecognition = () => {
         setIsLoading(false);
     }
 
+    const clearThumb = () => {
+        setSelectedImageUri('');
+    }
+
     return {
         selectedImageUri,
         isLoading,
         imgItems,
-        handleThumbnail
+        handleThumbnail,
+        clearThumb
     }
 }
