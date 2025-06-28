@@ -96,16 +96,16 @@ export default function RecipeForm() {
             .catch(error => {
                 try {
                     if (error.response) {
-                        const resp = error.response;
-                        console.warn('Backend error response:', resp.data);
-                        if (!resp.data.details)
-                            Alert.alert(resp.data.errorMessage, "Por favor, tente novamente.");
+                        const resp = error.response.data;
+                        console.warn("Backend error response:", resp);
+                        if (resp.errorMessage == "Receita Not Found!")
+                            Alert.alert("Servidor demorou para responder", "Por favor, tente novamente.");
                         else
-                            Alert.alert(resp.data.errorMessage, JSON.stringify(resp.data.details));
+                            Alert.alert(resp.errorMessage, JSON.stringify(resp.details));
                     } else if (error.request) {
-                        console.warn('No response received:', error.request);
+                        console.warn("No response received:", error.request);
                     } else {
-                        console.warn('Error setting up request:', error.message);
+                        console.warn("Error setting up request:", error.message);
                     }
                 } finally {
                     setIsPosting(false);

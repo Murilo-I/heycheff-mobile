@@ -1,8 +1,8 @@
-const NGROK_SERVER = 'https://8b4a-2804-1b1-fac0-1a4a-3c3e-5017-e9b5-f942.ngrok-free.app';
-const URL_DEV = `${NGROK_SERVER}/heycheff`;
-const URL_MEDIA_DEV = NGROK_SERVER;
+const KITE_SERVER = 'https://heycheff.pagekite.me';
+const URL_DEV = `${KITE_SERVER}/heycheff`;
+const URL_MEDIA_DEV = KITE_SERVER;
 
-const BASE_URL = 'https://heycheff-api-h5bcceg3c8acgraz.westus-01.azurewebsites.net';
+const BASE_URL = 'http://146.235.63.3:6015';
 const URL_PROD = `${BASE_URL}/heycheff`;
 const URL_MEDIA_PROD = `${URL_PROD}/media?path=`;
 
