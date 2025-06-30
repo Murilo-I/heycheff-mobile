@@ -36,6 +36,7 @@ export const DataTable = ({ tableItems, openModal, spliceStep }: DataTableProps)
                 const ri = tableItems.indexOf(item);
                 tableItems.splice(ri, 1);
                 spliceStep(item.step);
+                Alert.alert("Mudança realizada", "Step removido da lista!");
             })
             .catch(error => {
                 console.warn("Erro ao excluir step: ", error);

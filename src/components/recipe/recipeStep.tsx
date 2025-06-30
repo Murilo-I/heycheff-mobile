@@ -57,7 +57,7 @@ export const RecipeStep = ({ steps, showModal, onClose }: RecipeStepProps) => {
         if (player === undefined) {
             setPlayer(createVideoPlayer(videoPath));
         } else {
-            player.replace(videoPath);
+            player.replaceAsync(videoPath);
         }
         clearTranscript;
     }, [currentIndex]);
@@ -67,6 +67,8 @@ export const RecipeStep = ({ steps, showModal, onClose }: RecipeStepProps) => {
             if (transcript.includes("próximo passo")) nextStep();
             else if (transcript.includes("voltar")) prevStep();
             else if (transcript.includes("fechar")) close();
+            else if (transcript.includes("pausar vídeo")) player?.pause();
+            else if (transcript.includes("reproduzir vídeo")) player?.play();
         }
     }, [transcript]);
 

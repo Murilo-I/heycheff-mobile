@@ -56,6 +56,7 @@ export default function RecipeForm() {
         setSelectedTags([]);
         setDataSteps([]);
         clearThumb();
+        setIsPosting(false);
     }
 
     async function saveRecipe() {

@@ -14,14 +14,21 @@
       "backgroundColor": "#FFD186"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSSpeechRecognitionUsageDescription": "Allow Heycheff to use speech recognition.",
+        "NSMicrophoneUsageDescription": "Allow Heycheff to use the microphone."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#FFD186"
       },
-      "package": "br.com.heycheff"
+      "package": "br.com.heycheff",
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -44,7 +51,9 @@
         {
           "microphonePermission": "Allow Heycheff to use the microphone.",
           "speechRecognitionPermission": "Allow Heycheff to use speech recognition.",
-          "androidSpeechServicePackages": ["com.google.android.googlequicksearchbox"]
+          "androidSpeechServicePackages": [
+            "com.google.android.googlequicksearchbox"
+          ]
         }
       ],
       [
@@ -56,6 +65,12 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "6eecb039-7644-4964-bbdf-3fd8438310c0"
+      }
     }
   }
 }
