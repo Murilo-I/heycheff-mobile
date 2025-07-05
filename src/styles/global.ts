@@ -83,6 +83,10 @@ export const styles = StyleSheet.create({
         alignItems: 'flex-start'
     },
 
+    selfCenter: {
+        alignSelf: 'center'
+    },
+
     absolute: {
         position: 'absolute'
     },
@@ -138,7 +142,8 @@ export const styles = StyleSheet.create({
         width: '100%',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'flex-start'
+        justifyContent: 'flex-start',
+        paddingBottom: 8
     },
 
     postImage: {
@@ -192,6 +197,10 @@ export const styles = StyleSheet.create({
         fontSize: 12
     },
 
+    textMedium: {
+        fontSize: 14
+    },
+
     textLarge: {
         fontSize: 24
     },
@@ -226,6 +235,10 @@ export const styles = StyleSheet.create({
         borderWidth: 2
     },
 
+    borded: {
+        borderWidth: 1
+    },
+
     rounded: {
         borderRadius: 10
     },
@@ -257,8 +270,16 @@ export const styles = StyleSheet.create({
         margin: 8
     },
 
+    mr8: {
+        marginRight: 8
+    },
+
     mb8: {
         marginBottom: 8
+    },
+
+    mb16: {
+        marginBottom: 16
     },
 
     mt8: {
@@ -277,8 +298,20 @@ export const styles = StyleSheet.create({
         marginHorizontal: 8
     },
 
+    mx16: {
+        marginHorizontal: 16
+    },
+
+    my6: {
+        marginVertical: 6
+    },
+
     my16: {
         marginVertical: 16
+    },
+
+    p2: {
+        padding: 2
     },
 
     p4: {
@@ -291,6 +324,14 @@ export const styles = StyleSheet.create({
 
     p12: {
         padding: 12
+    },
+
+    pb12: {
+        paddingBottom: 12
+    },
+
+    h40: {
+        height: 40
     },
 
     h50: {
@@ -323,5 +364,9 @@ export const styles = StyleSheet.create({
 
     wFull: {
         width: '100%'
+    },
+
+    wXFull: {
+        width: '110%'
     }
 });

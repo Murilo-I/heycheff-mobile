@@ -1,3 +1,4 @@
+import { userId } from "@/storage/userId";
 import api from "./api";
 import { Step } from "./step";
 import { Tag } from "./tag";
@@ -7,7 +8,7 @@ type Pageable<T> = {
     count: number
 }
 
-export type ReceiptFeed = {
+export type RecipeFeed = {
     id: number
     thumb: string
     titulo: string
@@ -15,22 +16,22 @@ export type ReceiptFeed = {
     estimatedTime: number
 }
 
-export type ReceiptModal = {
+export type RecipeModal = {
     userId: string,
     steps: Step[]
 }
 
-export type ReceiptRequest = {
+export type RecipeRequest = {
     titulo: string,
     tags: Tag[],
-    thumb: File
+    file: { uri: string, name: string, type: string }
 }
 
-const baseUrl = '/receitas'
+export const baseUrl = '/receitas';
 
 async function loadFeed(pageNum: number, pageSize: number, userId?: string) {
     try {
-        return await api.get<Pageable<ReceiptFeed>>(baseUrl, {
+        return await api.get<Pageable<RecipeFeed>>(baseUrl, {
             params: {
                 pageNum,
                 pageSize,
@@ -44,22 +45,27 @@ async function loadFeed(pageNum: number, pageSize: number, userId?: string) {
 
 async function loadModal(id: number) {
     try {
-        return await api.get<ReceiptModal>(`${baseUrl}/${id}`);
+        return await api.get<RecipeModal>(`${baseUrl}/${id}`);
     } catch (error) {
         throw error;
     }
 }
 
-async function save(receipt: ReceiptRequest) {
+async function save(recipe: RecipeRequest) {
     const formData = new FormData();
-    formData.append('titulo', receipt.titulo);
-    formData.append('tags', JSON.stringify(receipt.tags));
-    formData.append('thumb', receipt.thumb);
+    formData.append('titulo', recipe.titulo);
+    formData.append('tags', JSON.stringify(recipe.tags));
+    formData.append('thumb', recipe.file as any);
+    const uid = await userId.get();
+    formData.append('userId', uid ? uid : '');
 
     try {
         return await api.post<{ seqId: number }>(baseUrl, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
+            },
+            transformRequest: (data, headers) => {
+                return data;
             }
         });
     } catch (error) {
@@ -67,9 +73,9 @@ async function save(receipt: ReceiptRequest) {
     }
 }
 
-async function updateStatus(receiptId: number) {
+async function updateStatus(recipeId: number) {
     try {
-        await api.patch(`${baseUrl}/${receiptId}`, {
+        await api.patch(`${baseUrl}/${recipeId}`, {
             status: true
         }, {
             headers: {
@@ -81,4 +87,4 @@ async function updateStatus(receiptId: number) {
     }
 }
 
-export const receiptServer = { loadFeed, loadModal, save, updateStatus }
+export const recipeServer = { loadFeed, loadModal, save, updateStatus }

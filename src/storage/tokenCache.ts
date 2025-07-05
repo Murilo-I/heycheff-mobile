@@ -16,4 +16,12 @@ async function saveToken(key: string, value: string) {
     }
 }
 
-export const tokenCache = { getToken, saveToken }
+async function removeToken(key: string) {
+    try {
+        SecureStore.deleteItemAsync(key);
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const tokenCache = { getToken, saveToken, removeToken }

@@ -1,12 +1,12 @@
-const NGROK_SERVER = 'https://0001-2804-7f0-bc02-99ca-d990-4520-718c-a655.ngrok-free.app';
-const URL_DEV = `${NGROK_SERVER}/heycheff`;
-const URL_MEDIA_DEV = NGROK_SERVER;
+const KITE_SERVER = 'https://heycheff.pagekite.me';
+const URL_DEV = `${KITE_SERVER}/heycheff`;
+const URL_MEDIA_DEV = KITE_SERVER;
 
-const IP_PROD = '179.124.193.12';
-const URL_PROD = `http://${IP_PROD}:6015/heycheff`;
-const URL_MEDIA_PROD = `http://${IP_PROD}:6015`;
+const BASE_URL = process.env.BASE_URL;
+const URL_PROD = `${BASE_URL}/heycheff`;
+const URL_MEDIA_PROD = `${URL_PROD}/media?path=`;
 
-const isDev = process.env.NODE_ENV === 'development';
+const isDev = process.env.NODE_ENV !== 'development';
 
 export const API_URL = isDev ? URL_DEV : URL_PROD;
 export const API_URL_MEDIA = isDev ? URL_MEDIA_DEV : URL_MEDIA_PROD;

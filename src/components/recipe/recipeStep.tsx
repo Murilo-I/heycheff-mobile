@@ -10,13 +10,13 @@ import { API_URL_MEDIA } from "@/util/endpoints";
 import { Button } from "../button";
 import { Modal } from "../modal";
 
-type ReceiptStepProps = {
+type RecipeStepProps = {
     steps: Step[],
     showModal: boolean,
     onClose: Dispatch<SetStateAction<boolean>>
 }
 
-export const ReceiptStep = ({ steps, showModal, onClose }: ReceiptStepProps) => {
+export const RecipeStep = ({ steps, showModal, onClose }: RecipeStepProps) => {
     const [activeStep, setActiveStep] = useState<Step>();
     const [currentIndex, setCurrentIndex] = useState(0);
     const [player, setPlayer] = useState<VideoPlayer>();
@@ -38,23 +38,37 @@ export const ReceiptStep = ({ steps, showModal, onClose }: ReceiptStepProps) => 
         stopRecognition();
     }
 
+    function isPossibleTriger() {
+        return transcript.includes("Hey chefe")
+            || transcript.includes("Hey chef")
+            || transcript.includes("Rei chefe")
+            || transcript.includes("Rei Jeff")
+            || transcript.includes("Hei chefe")
+            || transcript.includes("Ei Chefe")
+            || transcript.includes("Ei Jeff")
+            || transcript.includes("Ei chef");
+    }
+
     useEffect(() => {
         setActiveStep(steps[currentIndex]);
+        // TODO - alterar para path do video real
         let videoPath = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
 
         if (player === undefined) {
             setPlayer(createVideoPlayer(videoPath));
         } else {
-            player.replace(videoPath);
+            player.replaceAsync(videoPath);
         }
-        clearTranscript
+        clearTranscript;
     }, [currentIndex]);
 
     useEffect(() => {
-        if (transcript.includes("Hey chefe")) {
+        if (isPossibleTriger()) {
             if (transcript.includes("próximo passo")) nextStep();
             else if (transcript.includes("voltar")) prevStep();
             else if (transcript.includes("fechar")) close();
+            else if (transcript.includes("pausar vídeo")) player?.pause();
+            else if (transcript.includes("reproduzir vídeo")) player?.play();
         }
     }, [transcript]);
 

@@ -26,9 +26,14 @@ export default function Index() {
             const navState = nav.getState();
             if (navState) {
                 let routes = navState.routes;
+                if (routes[0].name === 'screen') {
+                    dispatch(setNavIndex(tabs.FEED));
+                    router.replace('/screen/feed');
+                } else {
+                    dispatch(setNavIndex(tabs.PERFIL));
+                    router.replace('/screen/user');
+                }
             }
-            dispatch(setNavIndex(tabs.PERFIL));
-            router.replace('/screen/user');
         }
     }, [isSignedIn]);
 
